@@ -2,6 +2,7 @@ import type { Vehicle } from "../hooks/useVehicles";
 
 function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void }) {
   const brevemente = v.status === "brevemente";
+  const mainImage = v.images?.[0] || v.image;
 
   return (
     <article
@@ -9,9 +10,9 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
       className="bg-black rounded-2xl overflow-hidden flex flex-col group cursor-pointer h-full"
     >
       <div className="bg-[#1c1c1c] h-52 overflow-hidden relative">
-        {v.image && (
+        {mainImage && (
           <img
-            src={v.image}
+            src={mainImage}
             alt={`${v.name} — autocaravana`}
             className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
           />
