@@ -5,7 +5,10 @@ import HomePage from "./pages/HomePage";
 import StockPage from "./pages/StockPage";
 import ContactosPage from "./pages/ContactosPage";
 import VehicleDetailPage from "./pages/VehicleDetailPage";
-import AdminPage from "./pages/AdminPage";
+// AdminPage ainda não tem autenticação — a rota fica desligada da produção
+// até construirmos login a sério. Para trabalhar nela localmente,
+// descomenta a linha abaixo e o <Route path="/admin" ...>.
+// import AdminPage from "./pages/AdminPage";
 
 export default function App() {
   return (
@@ -17,7 +20,7 @@ export default function App() {
           <Route path="/stock" element={<StockPage />} />
           <Route path="/stock/:id" element={<VehicleDetailPage />} />
           <Route path="/contactos" element={<ContactosPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          {/* <Route path="/admin" element={<AdminPage />} /> */}
         </Routes>
       </main>
       <Footer />

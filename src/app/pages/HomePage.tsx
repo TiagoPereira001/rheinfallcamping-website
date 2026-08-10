@@ -5,20 +5,8 @@ import VehicleCard from "../components/VehicleCard";
 
 function HomePage() {
   const navigate = useNavigate();
-  const { vehicles } = useVehicles();
+  const { vehicles, loading, error } = useVehicles();
 
-  
-  {loading && (
-            <p className="text-black/50 text-sm">A carregar stock...</p>
-          )}
-          {error && <p className="text-red-700 text-sm">{error}</p>}
-          {!loading && !error && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {vehicles.slice(0, 3).map((v) => (
-                <VehicleCard key={v.id} v={v} onClick={() => navigate(`/stock/${v.id}`)} />
-              ))}
-            </div>
-          )}
   return (
     <>
       <section className="bg-black">
@@ -48,18 +36,32 @@ function HomePage() {
       <section className="bg-[#f4f4f2] py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex items-end justify-between mb-12">
-            <h2 className="font-serif text-black text-3xl md:text-4xl font-medium">Em Destaque</h2>
-            <Link to="/stock" className="hidden sm:block text-black/60 hover:text-black text-sm font-medium transition-colors">
+            <h2 className="font-serif text-black text-3xl md:text-4xl font-medium">
+              Em Destaque
+            </h2>
+            <Link
+              to="/stock"
+              className="hidden sm:block text-black/60 hover:text-black text-sm font-medium transition-colors"
+            >
               Ver todo o stock &rarr;
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {vehicles.slice(0, 3).map((v) => (
-              <VehicleCard key={v.id} v={v} onClick={() => navigate(`/stock/${v.id}`)} />
-            ))}
-          </div>
+          {loading && (
+            <p className="text-black/50 text-sm">A carregar stock...</p>
+          )}
+          {error && <p className="text-red-700 text-sm">{error}</p>}
+          {!loading && !error && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {vehicles.slice(0, 3).map((v) => (
+                <VehicleCard key={v.id} v={v} onClick={() => navigate(`/stock/${v.id}`)} />
+              ))}
+            </div>
+          )}
           <div className="mt-8 text-center sm:hidden">
-            <Link to="/stock" className="text-black text-sm font-medium underline underline-offset-4">
+            <Link
+              to="/stock"
+              className="text-black text-sm font-medium underline underline-offset-4"
+            >
               Ver todo o stock
             </Link>
           </div>
@@ -77,7 +79,9 @@ function HomePage() {
               />
             </div>
             <div>
-              <p className="text-white/55 text-xs tracking-[0.2em] uppercase mb-6 font-sans">Família & Rigor</p>
+              <p className="text-white/55 text-xs tracking-[0.2em] uppercase mb-6 font-sans">
+                Família & Rigor
+              </p>
               <h2 className="font-serif text-white text-3xl md:text-4xl font-medium leading-[1.15] mb-7">
                 Um projeto familiar, dedicado à estrada.
               </h2>
