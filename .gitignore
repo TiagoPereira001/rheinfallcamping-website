@@ -1,0 +1,14 @@
+# Dependências
+node_modules
+
+# Build
+dist
+
+# Variáveis de ambiente (nunca enviar para o GitHub)
+.env
+.env.local
+.env.*.local
+
+# Sistema
+.DS_Store
+*.log
