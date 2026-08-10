@@ -9,13 +9,22 @@ export type Vehicle = {
   km: string;
   price: string;
   image: string;
-  // Campos opcionais — só aparecem no site se estiverem preenchidos no Firestore
+// Campos opcionais — só aparecem no site se estiverem preenchidos no Firestore
   status?: string;        // ex: "brevemente"
   description?: string;
-  transmission?: string;
-  fuel?: string;
-  seats?: string;
-  warranty?: string;
+
+  // Dados técnicos
+  registration?: string;  // data do livrete, ex: "2016/03"
+  engine?: string;        // ex: "2.2 TDCi"
+  power?: string;         // ex: "155 cv"
+  transmission?: string;  // ex: "Manual"
+  fuel?: string;          // ex: "Diesel"
+  seats?: string;         // ex: "5 lugares"
+  beds?: string;          // ex: "Cama central + basculante"
+  condition?: string;     // ex: "Excelente estado"
+
+  // Lista de equipamento (array de texto no Firestore)
+  features?: string[];
 };
 
 export function useVehicles() {

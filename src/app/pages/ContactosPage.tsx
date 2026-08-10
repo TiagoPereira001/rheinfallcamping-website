@@ -54,7 +54,7 @@ function ContactosPage() {
               </div>
 
               <div className="pt-4">
-                
+                <a
                   href={whatsappLink("Olá, tenho interesse nas vossas autocaravanas.")}
                   target="_blank"
                   rel="noopener noreferrer"

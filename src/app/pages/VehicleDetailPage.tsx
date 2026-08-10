@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
 
@@ -43,12 +43,19 @@ function VehicleDetailPage() {
 
   const specs = [
     { label: "Ano", value: vehicle.year },
+    { label: "Livrete", value: vehicle.registration },
     { label: "Quilómetros", value: vehicle.km },
-    { label: "Transmissão", value: vehicle.transmission },
+    { label: "Motor", value: vehicle.engine },
+    { label: "Potência", value: vehicle.power },
     { label: "Combustível", value: vehicle.fuel },
-    { label: "Lotação", value: vehicle.seats },
+    { label: "Transmissão", value: vehicle.transmission },
+    { label: "Lugares", value: vehicle.seats },
+    { label: "Camas", value: vehicle.beds },
+    { label: "Estado", value: vehicle.condition },
     { label: "Garantia", value: vehicle.warranty },
   ].filter((s) => s.value);
+
+  const equipamento = vehicle.features?.filter(Boolean) ?? [];
 
   const enviar = (e: React.FormEvent | React.MouseEvent, tipo: "visita" | "proposta") => {
     e.preventDefault();
@@ -181,6 +188,22 @@ function VehicleDetailPage() {
                       </div>
                     ))}
                   </div>
+                </div>
+              </>
+            )}
+
+            {equipamento.length > 0 && (
+              <>
+                <h3 className="font-serif text-2xl font-medium mt-12 mb-6">Equipamento</h3>
+                <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                    {equipamento.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-black/80 text-sm">
+                        <Check size={16} className="text-[#C2A07A] shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </>
             )}
