@@ -3,14 +3,31 @@ import { ArrowUpRight } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import VehicleCard from "../components/VehicleCard";
 
+// Fotos da página inicial. Mete os ficheiros em public/images/
+// e escreve aqui o caminho. Deixa null para não mostrar foto.
+const HERO_IMAGE: string | null = "/images/foto_padrao.jpeg"
+const SOBRE_NOS_IMAGE: string | null = null; // ex: "/images/oficina.jpg"
+
 function HomePage() {
   const navigate = useNavigate();
   const { vehicles, loading, error } = useVehicles();
 
   return (
     <>
-      <section className="bg-black">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-28 md:py-36 lg:py-44">
+      <section className="bg-black relative overflow-hidden">
+        {HERO_IMAGE && (
+          <>
+            <img
+              src={HERO_IMAGE}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Camada escura por cima da foto, para o texto branco continuar legível */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
+          </>
+        )}
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-28 md:py-36 lg:py-44">
           <div className="max-w-3xl">
             <p className="text-white/40 text-xs tracking-[0.2em] uppercase mb-8 font-sans">
               Projeto familiar · Covilhã
@@ -72,11 +89,13 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div className="bg-[#d9cfc0] rounded-2xl h-[340px] md:h-[480px] overflow-hidden relative">
-              <img
-                src="https://images.unsplash.com/photo-1627581781297-3f32486950ee?w=800&h=600&fit=crop&auto=format"
-                alt="Trabalho de mecânica e preparação da autocaravana"
-                className="w-full h-full object-cover mix-blend-multiply opacity-80"
-              />
+              {SOBRE_NOS_IMAGE && (
+                <img
+                  src={SOBRE_NOS_IMAGE}
+                  alt="A preparação das nossas autocaravanas"
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
             <div>
               <p className="text-white/55 text-xs tracking-[0.2em] uppercase mb-6 font-sans">
