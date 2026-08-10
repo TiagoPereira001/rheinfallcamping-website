@@ -9,6 +9,13 @@ export type Vehicle = {
   km: string;
   price: string;
   image: string;
+  // Campos opcionais — só aparecem no site se estiverem preenchidos no Firestore
+  status?: string;        // ex: "brevemente"
+  description?: string;
+  transmission?: string;
+  fuel?: string;
+  seats?: string;
+  warranty?: string;
 };
 
 export function useVehicles() {
