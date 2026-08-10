@@ -90,11 +90,13 @@ function VehicleDetailPage() {
 
         {/* Cabeçalho */}
         <div className="mb-10">
-          {brevemente && (
-            <span className="inline-block bg-[#C2A07A] text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4">
-              Brevemente em stock
-            </span>
-          )}
+          <span
+            className={`inline-block text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 ${
+              brevemente ? "bg-[#C2A07A]" : "bg-[#2f7d4f]"
+            }`}
+          >
+            {brevemente ? "Brevemente em stock" : "Para venda"}
+          </span>
           <h1 className="font-serif text-black text-4xl md:text-5xl font-medium mb-3">
             {vehicle.name}
           </h1>

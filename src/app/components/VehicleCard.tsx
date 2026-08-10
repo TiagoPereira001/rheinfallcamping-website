@@ -18,11 +18,13 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
-        {brevemente && (
-          <span className="absolute top-4 left-4 bg-[#C2A07A] text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full">
-            Brevemente
-          </span>
-        )}
+        <span
+          className={`absolute top-4 left-4 text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full ${
+            brevemente ? "bg-[#C2A07A]" : "bg-[#2f7d4f]"
+          }`}
+        >
+          {brevemente ? "Brevemente" : "Para venda"}
+        </span>
       </div>
       <div className="p-6 flex flex-col flex-1">
         <h3 className="font-serif text-white text-xl font-medium mb-3 leading-snug">
