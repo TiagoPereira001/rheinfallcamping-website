@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, ImageIcon } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
 
@@ -33,7 +33,7 @@ function VehicleDetailPage() {
 
   const brevemente = vehicle.status === "brevemente";
 
-  // Junta a galeria: usa "images" se existir, senão cai para o campo antigo "image"
+  // Galeria: usa "images" se existir, senão cai para o campo antigo "image"
   const gallery = vehicle.images?.length ? vehicle.images : vehicle.image ? [vehicle.image] : [];
   const hasMultiple = gallery.length > 1;
   const currentPhoto = gallery[photoIndex] ?? gallery[0];
@@ -78,123 +78,136 @@ function VehicleDetailPage() {
 
   return (
     <div className="bg-[#f4f4f2] min-h-screen">
-      <div className="w-full h-[40vh] md:h-[60vh] bg-[#1c1c1c] relative">
-        {currentPhoto && (
-          <img
-            src={currentPhoto}
-            alt={`${vehicle.name} — foto ${photoIndex + 1}`}
-            className="w-full h-full object-cover opacity-90"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 md:py-12">
 
+        {/* Voltar */}
         <button
           onClick={() => navigate("/stock")}
-          className="absolute top-6 left-6 lg:left-10 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-4 py-2 flex items-center gap-2 rounded-full text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-2 text-black/60 hover:text-black text-sm font-medium transition-colors mb-8"
         >
-          <ChevronLeft size={16} /> Voltar
+          <ChevronLeft size={16} /> Voltar ao stock
         </button>
 
-        {hasMultiple && (
-          <>
-            <button
-              onClick={prevPhoto}
-              aria-label="Foto anterior"
-              className="absolute left-4 lg:left-10 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-colors"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={nextPhoto}
-              aria-label="Foto seguinte"
-              className="absolute right-4 lg:right-10 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/25 backdrop-blur-md text-white p-3 rounded-full transition-colors"
-            >
-              <ChevronRight size={20} />
-            </button>
-
-            <span className="absolute bottom-6 right-6 lg:right-10 bg-black/50 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full">
-              {photoIndex + 1} / {gallery.length}
+        {/* Cabeçalho */}
+        <div className="mb-10">
+          {brevemente && (
+            <span className="inline-block bg-[#C2A07A] text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4">
+              Brevemente em stock
             </span>
-
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-              {gallery.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPhotoIndex(i)}
-                  aria-label={`Ver foto ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === photoIndex ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"
-                  }`}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
-        {hasMultiple && (
-          <div className="flex gap-3 overflow-x-auto pb-2 mb-12 -mt-4">
-            {gallery.map((photo, i) => (
-              <button
-                key={i}
-                onClick={() => setPhotoIndex(i)}
-                className={`shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                  i === photoIndex ? "border-black" : "border-transparent opacity-60 hover:opacity-100"
-                }`}
-              >
-                <img
-                  src={photo}
-                  alt={`Miniatura ${i + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
-          </div>
-        )}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-          <div className="lg:col-span-2">
-            {brevemente && (
-              <span className="inline-block bg-[#C2A07A] text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4">
-                Brevemente em stock
-              </span>
-            )}
-            <h1 className="font-serif text-black text-4xl md:text-5xl font-medium mb-4">
-              {vehicle.name}
-            </h1>
+          )}
+          <h1 className="font-serif text-black text-4xl md:text-5xl font-medium mb-3">
+            {vehicle.name}
+          </h1>
+          <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
             {vehicle.price && (
-              <p className="text-black text-3xl font-medium mb-12">
-                {vehicle.price}
-              </p>
+              <p className="text-black text-3xl font-medium">{vehicle.price}</p>
             )}
+            <div className="flex items-center gap-3 text-black/50 text-sm">
+              {vehicle.year && <span>{vehicle.year}</span>}
+              {vehicle.year && vehicle.km && <span className="w-px h-3 bg-black/20" />}
+              {vehicle.km && <span>{vehicle.km}</span>}
+            </div>
+          </div>
+        </div>
 
-            {vehicle.description && (
-              <div className="prose prose-sm md:prose-base text-black/80 mb-12">
-                <p>{vehicle.description}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-14">
+
+          {/* Coluna esquerda: galeria + info */}
+          <div className="lg:col-span-2">
+
+            {/* Galeria */}
+            {gallery.length > 0 ? (
+              <div className="mb-10">
+                <div className="relative rounded-2xl overflow-hidden bg-[#1c1c1c] aspect-[4/3] sm:aspect-[16/10]">
+                  <img
+                    src={currentPhoto}
+                    alt={`${vehicle.name} — foto ${photoIndex + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {hasMultiple && (
+                    <>
+                      <button
+                        onClick={prevPhoto}
+                        aria-label="Foto anterior"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white p-2.5 rounded-full transition-colors"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                      <button
+                        onClick={nextPhoto}
+                        aria-label="Foto seguinte"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 backdrop-blur-md text-white p-2.5 rounded-full transition-colors"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                      <span className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full">
+                        {photoIndex + 1} / {gallery.length}
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                {/* Miniaturas */}
+                {hasMultiple && (
+                  <div className="flex gap-2.5 overflow-x-auto mt-3 pb-1">
+                    {gallery.map((photo, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setPhotoIndex(i)}
+                        aria-label={`Ver foto ${i + 1}`}
+                        className={`shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                          i === photoIndex
+                            ? "border-black"
+                            : "border-transparent opacity-55 hover:opacity-100"
+                        }`}
+                      >
+                        <img src={photo} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="mb-10 rounded-2xl bg-[#e6e6e3] aspect-[16/10] flex flex-col items-center justify-center text-black/30">
+                <ImageIcon size={40} />
+                <span className="text-sm mt-3">Fotos brevemente disponíveis</span>
               </div>
             )}
 
+            {/* Descrição */}
+            {vehicle.description && (
+              <div className="mb-10">
+                <h3 className="font-serif text-2xl font-medium mb-4">Descrição</h3>
+                <p className="text-black/80 text-[0.9375rem] leading-relaxed whitespace-pre-line">
+                  {vehicle.description}
+                </p>
+              </div>
+            )}
+
+            {/* Especificações */}
             {specs.length > 0 && (
-              <>
-                <h3 className="font-serif text-2xl font-medium mb-6">Especificações</h3>
+              <div className="mb-10">
+                <h3 className="font-serif text-2xl font-medium mb-5">Especificações</h3>
                 <div className="bg-white rounded-2xl border border-black/5 overflow-hidden">
                   <div className="grid grid-cols-2 divide-x divide-y divide-black/5">
                     {specs.map((spec) => (
-                      <div key={spec.label} className="p-4 md:p-6">
+                      <div key={spec.label} className="p-4 md:p-5">
                         <span className="block text-xs uppercase tracking-wider text-black/40 mb-1">
                           {spec.label}
                         </span>
-                        <span className="font-medium text-black">{spec.value}</span>
+                        <span className="font-medium text-black text-[0.9375rem]">{spec.value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-              </>
+              </div>
             )}
 
+            {/* Equipamento */}
             {equipamento.length > 0 && (
-              <>
-                <h3 className="font-serif text-2xl font-medium mt-12 mb-6">Equipamento</h3>
+              <div>
+                <h3 className="font-serif text-2xl font-medium mb-5">Equipamento</h3>
                 <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8">
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                     {equipamento.map((item) => (
@@ -205,12 +218,13 @@ function VehicleDetailPage() {
                     ))}
                   </ul>
                 </div>
-              </>
+              </div>
             )}
           </div>
 
+          {/* Coluna direita: contacto */}
           <div className="lg:col-span-1">
-            <div className="bg-[#C2A07A] rounded-3xl p-8 sticky top-24 shadow-lg text-white">
+            <div className="bg-[#C2A07A] rounded-3xl p-8 lg:sticky lg:top-24 shadow-lg text-white">
               <h3 className="font-serif text-2xl font-medium mb-2">Tem interesse?</h3>
               <p className="text-white/80 text-sm mb-8">
                 {brevemente
