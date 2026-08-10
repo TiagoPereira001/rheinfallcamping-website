@@ -13,10 +13,10 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
           <img
             src={v.image}
             alt={`${v.name} — autocaravana`}
-            className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-[1.04] transition-all duration-500"
+            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
         {brevemente && (
           <span className="absolute top-4 left-4 bg-[#C2A07A] text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full">
             Brevemente
