@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rheinfallcamping.netlify.app/sitemap.xml
+Sitemap: https://rheinfallcamping.pt/sitemap.xml
