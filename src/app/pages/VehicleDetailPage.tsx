@@ -2,12 +2,15 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
+import { whatsappLink } from "../data/config";
 
 function VehicleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { vehicles, loading } = useVehicles();
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [form, setForm] = useState({ nome: "", contacto: "" });
+  const [erro, setErro] = useState("");
   const vehicle = vehicles.find((v) => String(v.id) === id);
 
   if (loading) {
@@ -46,6 +49,25 @@ function VehicleDetailPage() {
     { label: "Lotação", value: vehicle.seats },
     { label: "Garantia", value: vehicle.warranty },
   ].filter((s) => s.value);
+
+  const enviar = (e: React.FormEvent | React.MouseEvent, tipo: "visita" | "proposta") => {
+    e.preventDefault();
+
+    if (!form.nome.trim() || !form.contacto.trim()) {
+      setErro("Por favor preencha o nome e o contacto.");
+      return;
+    }
+
+    const intro =
+      tipo === "proposta"
+        ? `Olá! Chamo-me ${form.nome.trim()} e gostava de fazer uma proposta para a ${vehicle.name}.`
+        : brevemente
+        ? `Olá! Chamo-me ${form.nome.trim()} e gostava de ser avisado quando a ${vehicle.name} chegar ao stand.`
+        : `Olá! Chamo-me ${form.nome.trim()} e gostava de agendar uma visita para ver a ${vehicle.name}.`;
+
+    const mensagem = [intro, `O meu contacto: ${form.contacto.trim()}`].join("\n");
+    window.open(whatsappLink(mensagem), "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="bg-[#f4f4f2] min-h-screen">
@@ -173,25 +195,43 @@ function VehicleDetailPage() {
                   : "Deixe o seu contacto para agendarmos uma visita ou para fazer uma proposta."}
               </p>
 
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-4" onSubmit={(e) => enviar(e, "visita")}>
                 <input
                   type="text"
+                  value={form.nome}
+                  onChange={(e) => { setForm({ ...form, nome: e.target.value }); setErro(""); }}
                   placeholder="Nome"
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
                 />
                 <input
-                  type="email"
+                  type="text"
+                  value={form.contacto}
+                  onChange={(e) => { setForm({ ...form, contacto: e.target.value }); setErro(""); }}
                   placeholder="Email ou Telefone"
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
                 />
-                <button className="w-full bg-white text-black text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-white/90 transition-colors mt-2 shadow-sm">
+
+                {erro && <p className="text-white text-sm bg-black/25 rounded-lg px-3 py-2">{erro}</p>}
+
+                <button
+                  type="submit"
+                  className="w-full bg-white text-black text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-white/90 transition-colors mt-2 shadow-sm"
+                >
                   {brevemente ? "Avisar-me quando chegar" : "Agendar Visita"}
                 </button>
                 {!brevemente && (
-                  <button className="w-full bg-transparent border border-white/30 text-white text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-white/5 transition-colors">
+                  <button
+                    type="button"
+                    onClick={(e) => enviar(e, "proposta")}
+                    className="w-full bg-transparent border border-white/30 text-white text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-white/5 transition-colors"
+                  >
                     Fazer Proposta
                   </button>
                 )}
+
+                <p className="text-white/60 text-xs text-center pt-1">
+                  Abre o WhatsApp com a sua mensagem já preenchida.
+                </p>
               </form>
             </div>
           </div>
