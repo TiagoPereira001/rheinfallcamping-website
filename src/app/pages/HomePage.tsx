@@ -5,8 +5,8 @@ import VehicleCard from "../components/VehicleCard";
 
 // Fotos da página inicial. Mete os ficheiros em public/images/
 // e escreve aqui o caminho. Deixa null para não mostrar foto.
-const HERO_IMAGE: string | null = "/images/foto_padrao.webp"; 
-const SOBRE_NOS_IMAGE: string | null = null; 
+const HERO_IMAGE: string | null = "/images/foto_padrao.webp";
+const SOBRE_NOS_IMAGE: string | null = null;
 
 function HomePage() {
   const navigate = useNavigate();
