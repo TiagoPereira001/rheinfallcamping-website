@@ -5,8 +5,8 @@ import VehicleCard from "../components/VehicleCard";
 
 // Fotos da página inicial. Mete os ficheiros em public/images/
 // e escreve aqui o caminho. Deixa null para não mostrar foto.
-const HERO_IMAGE: string | null = "/images/foto_padrao.jpeg"
-const SOBRE_NOS_IMAGE: string | null = "/images/sobre_nos.jpg";
+const HERO_IMAGE: string | null = "/images/foto_padrao.webp"; 
+const SOBRE_NOS_IMAGE: string | null = null; 
 
 function HomePage() {
   const navigate = useNavigate();
@@ -23,24 +23,22 @@ function HomePage() {
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            {/* Camada escura por cima da foto, para o texto branco continuar legível */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
           </>
         )}
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-28 md:py-36 lg:py-44">
-          <div className="max-w-3xl">
-            <p className="text-white/40 text-xs tracking-[0.2em] uppercase mb-8 font-sans">
-              Projeto familiar · Covilhã
-            </p>
-            <h1 className="font-serif text-white text-4xl sm:text-5xl md:text-6xl lg:text-[4.25rem] font-medium leading-[1.08] mb-12">
-              Uma nova forma de viajar, com tranquilidade. Compre aqui a sua
-              autocaravana de sonho.
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-24 md:py-32 lg:py-40">
+          <div className="max-w-2xl">
+            <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-medium leading-[1.15] mb-6">
+              Autocaravanas preparadas por quem percebe e gosta disto.
             </h1>
+            <p className="text-white/70 text-base md:text-lg leading-relaxed mb-10 max-w-xl">
+              Há mais de 10 anos a comprar, preparar e vender autocaravanas na zona da Covilhã. Cada uma é tratada como se fosse para nós.
+            </p>
             <Link
               to="/stock"
-              className="inline-flex items-center gap-3 bg-[#d6d6d4] text-black text-sm font-medium px-7 py-3.5 rounded-full hover:bg-white transition-colors duration-200 group"
+              className="inline-flex items-center gap-3 bg-white text-black text-sm font-medium px-7 py-3.5 rounded-full hover:bg-white/90 transition-colors duration-200 group"
             >
-              Explorar o stock atual
+              Ver autocaravanas disponíveis
               <ArrowUpRight
                 size={15}
                 className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200"
@@ -50,17 +48,17 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#f4f4f2] py-20 md:py-28">
+      <section className="bg-[#f4f4f2] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="flex items-end justify-between mb-12">
-            <h2 className="font-serif text-black text-3xl md:text-4xl font-medium">
-              Em Destaque
+          <div className="flex items-end justify-between mb-10">
+            <h2 className="text-black text-2xl md:text-3xl font-medium">
+              Em destaque
             </h2>
             <Link
               to="/stock"
               className="hidden sm:block text-black/60 hover:text-black text-sm font-medium transition-colors"
             >
-              Ver todo o stock &rarr;
+              Ver todo o stock →
             </Link>
           </div>
           {loading && (
@@ -85,30 +83,34 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="bg-[#C2A07A] py-20 md:py-28">
+      <section className="bg-[#1a1a1a] py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
-            <div className="bg-[#d9cfc0] rounded-2xl h-[340px] md:h-[480px] overflow-hidden relative">
-              {SOBRE_NOS_IMAGE && (
+            <div className="bg-[#2a2a2a] rounded-2xl h-[340px] md:h-[480px] overflow-hidden relative">
+              {SOBRE_NOS_IMAGE ? (
                 <img
                   src={SOBRE_NOS_IMAGE}
-                  alt="A preparação das nossas autocaravanas"
+                  alt="Preparação de uma autocaravana"
                   className="w-full h-full object-cover"
                 />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-white/20 text-sm">
+                  Foto em breve
+                </div>
               )}
             </div>
             <div>
-              <p className="text-white/55 text-xs tracking-[0.2em] uppercase mb-6 font-sans">
-                Família & Rigor
-              </p>
-              <h2 className="font-serif text-white text-3xl md:text-4xl font-medium leading-[1.15] mb-7">
-                Um projeto familiar, dedicado à estrada.
+              <h2 className="text-white text-2xl md:text-3xl font-medium leading-snug mb-6">
+                Quem somos
               </h2>
-              <p className="text-white/85 text-[0.9375rem] leading-relaxed mb-5">
-                Somos um negócio de família simples e apaixonado por autocaravanas. O que começou como um hobby, tornou-se num projeto honesto, direto e sem complicações. Quando fala connosco, fala com quem prepara e cuida de cada carrinha.
+              <p className="text-white/75 text-[0.9375rem] leading-relaxed mb-5">
+                Isto começou com um gosto pessoal: o de pegar numa autocaravana e partir sem direção. Com o tempo, esse gosto tornou-se num projeto — comprar, preparar e vender autocaravanas há mais de 10 anos na zona da Covilhã.
               </p>
-              <p className="text-white/85 text-[0.9375rem] leading-relaxed mb-5">
-                A mecânica e a fiabilidade são a nossa prioridade. Cada veículo passa por uma inspeção básica e os pontos essenciais são revistos antes da entrega. Queremos garantir que arranca para a sua viagem com segurança, mas sem as margens e os custos exagerados de um stand tradicional.
+              <p className="text-white/75 text-[0.9375rem] leading-relaxed mb-5">
+                Antes de vender, cada autocaravana é preparada como se fosse para nós. Por dentro e por fora, o objetivo é sempre o mesmo: que o próximo dono receba algo que nós próprios teríamos orgulho em usar.
+              </p>
+              <p className="text-white/75 text-[0.9375rem] leading-relaxed">
+                Não somos um stand grande e não queremos ser. Nos stands grandes, muitas vezes o foco é a margem e não o cliente. Aqui falamos diretamente, sem pressão e sem surpresas.
               </p>
             </div>
           </div>
