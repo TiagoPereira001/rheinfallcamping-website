@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router";
 import { ChevronLeft, ChevronRight, Check, ImageIcon } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
+import { usePageTitle } from "../hooks/usePageTitle";
+
 
 function VehicleDetailPage() {
   const { id } = useParams();
@@ -12,6 +14,7 @@ function VehicleDetailPage() {
   const [form, setForm] = useState({ nome: "", contacto: "" });
   const [erro, setErro] = useState("");
   const vehicle = vehicles.find((v) => String(v.id) === id);
+  usePageTitle(vehicle?.name, vehicle ? `${vehicle.name} — ${vehicle.year}, ${vehicle.km}. ${vehicle.price}. Autocaravana usada na Covilhã.` : undefined);
 
   if (loading) {
     return (

@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import { parseNumero, marcaDoNome } from "../lib/utils";
 import VehicleCard from "../components/VehicleCard";
+import { usePageTitle } from "../hooks/usePageTitle";
+
 
 const POR_PAGINA = 6;
 
@@ -21,6 +23,7 @@ const OPCOES_PRECO = [
 ];
 
 function StockPage() {
+  usePageTitle("O nosso stock", "Veja as autocaravanas disponíveis. Preços, quilómetros, equipamento e fotos reais.");
   const navigate = useNavigate();
   const { vehicles, loading, error } = useVehicles();
 

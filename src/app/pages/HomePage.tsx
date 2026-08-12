@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import VehicleCard from "../components/VehicleCard";
+import { usePageTitle } from "../hooks/usePageTitle";
+
 
 // Fotos da página inicial. Mete os ficheiros em public/images/
 // e escreve aqui o caminho. Deixa null para não mostrar foto.
@@ -9,6 +11,7 @@ const HERO_IMAGE: string | null = "/images/foto_padrao.webp";
 const SOBRE_NOS_IMAGE: string | null = null;
 
 function HomePage() {
+  usePageTitle();
   const navigate = useNavigate();
   const { vehicles, loading, error } = useVehicles();
 
