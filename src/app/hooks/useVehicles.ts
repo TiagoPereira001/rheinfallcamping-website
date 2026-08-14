@@ -9,6 +9,7 @@ export type Vehicle = {
   km: string;
   price: string;
   image: string;
+  images?: string[];      // galeria de fotos — se vazio, cai para "image"
 // Campos opcionais — só aparecem no site se estiverem preenchidos no Firestore
   status?: string;        // ex: "brevemente"
   description?: string;

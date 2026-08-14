@@ -5,7 +5,6 @@ import { useVehicles } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
 import { usePageTitle } from "../hooks/usePageTitle";
 
-
 function VehicleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,7 +13,13 @@ function VehicleDetailPage() {
   const [form, setForm] = useState({ nome: "", contacto: "" });
   const [erro, setErro] = useState("");
   const vehicle = vehicles.find((v) => String(v.id) === id);
-  usePageTitle(vehicle?.name, vehicle ? `${vehicle.name} — ${vehicle.year}, ${vehicle.km}. ${vehicle.price}. Autocaravana usada na Covilhã.` : undefined);
+
+  usePageTitle(
+    vehicle?.name,
+    vehicle
+      ? `${vehicle.name}${vehicle.year ? ` de ${vehicle.year}` : ""}. Autocaravana usada na zona da Covilhã.`
+      : undefined
+  );
 
   if (loading) {
     return (
@@ -35,6 +40,7 @@ function VehicleDetailPage() {
   }
 
   const brevemente = vehicle.status === "brevemente";
+  const vendida = vehicle.status === "vendida";
 
   // Galeria: usa "images" se existir, senão cai para o campo antigo "image"
   const gallery = vehicle.images?.length ? vehicle.images : vehicle.image ? [vehicle.image] : [];
@@ -68,12 +74,13 @@ function VehicleDetailPage() {
       return;
     }
 
-    const intro =
-      tipo === "proposta"
-        ? `Olá! Chamo-me ${form.nome.trim()} e gostava de fazer uma proposta para a ${vehicle.name}.`
-        : brevemente
-        ? `Olá! Chamo-me ${form.nome.trim()} e gostava de ser avisado quando a ${vehicle.name} chegar ao stand.`
-        : `Olá! Chamo-me ${form.nome.trim()} e gostava de agendar uma visita para ver a ${vehicle.name}.`;
+    const intro = vendida
+      ? `Olá! Chamo-me ${form.nome.trim()}. Vi que a ${vehicle.name} já foi vendida — gostava de ser avisado se entrar alguma parecida.`
+      : tipo === "proposta"
+      ? `Olá! Chamo-me ${form.nome.trim()} e gostava de fazer uma proposta para a ${vehicle.name}.`
+      : brevemente
+      ? `Olá! Chamo-me ${form.nome.trim()} e gostava de ser avisado quando a ${vehicle.name} chegar ao stand.`
+      : `Olá! Chamo-me ${form.nome.trim()} e gostava de agendar uma visita para ver a ${vehicle.name}.`;
 
     const mensagem = [intro, `O meu contacto: ${form.contacto.trim()}`].join("\n");
     window.open(whatsappLink(mensagem), "_blank", "noopener,noreferrer");
@@ -83,7 +90,6 @@ function VehicleDetailPage() {
     <div className="bg-[#f4f4f2] min-h-screen">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 md:py-12">
 
-        {/* Voltar */}
         <button
           onClick={() => navigate("/stock")}
           className="inline-flex items-center gap-2 text-black/60 hover:text-black text-sm font-medium transition-colors mb-8"
@@ -91,20 +97,19 @@ function VehicleDetailPage() {
           <ChevronLeft size={16} /> Voltar ao stock
         </button>
 
-        {/* Cabeçalho */}
         <div className="mb-10">
           <span
             className={`inline-block text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 ${
-              brevemente ? "bg-[#C2A07A]" : "bg-[#2f7d4f]"
+              vendida ? "bg-[#b02020]" : brevemente ? "bg-[#C2A07A]" : "bg-[#2f7d4f]"
             }`}
           >
-            {brevemente ? "Brevemente em stock" : "Para venda"}
+            {vendida ? "Vendida" : brevemente ? "Brevemente em stock" : "Para venda"}
           </span>
-          <h1 className="font-serif text-black text-4xl md:text-5xl font-medium mb-3">
+          <h1 className="text-black text-3xl md:text-4xl font-medium mb-3">
             {vehicle.name}
           </h1>
           <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-            {vehicle.price && (
+            {vehicle.price && !vendida && (
               <p className="text-black text-3xl font-medium">{vehicle.price}</p>
             )}
             <div className="flex items-center gap-3 text-black/50 text-sm">
@@ -117,17 +122,15 @@ function VehicleDetailPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-14">
 
-          {/* Coluna esquerda: galeria + info */}
           <div className="lg:col-span-2">
 
-            {/* Galeria */}
             {gallery.length > 0 ? (
               <div className="mb-10">
                 <div className="relative rounded-2xl overflow-hidden bg-[#1c1c1c] aspect-[4/3] sm:aspect-[16/10]">
                   <img
                     src={currentPhoto}
                     alt={`${vehicle.name} — foto ${photoIndex + 1}`}
-                    className="w-full h-full object-cover"
+                    className={`w-full h-full object-cover ${vendida ? "grayscale-[35%]" : ""}`}
                   />
 
                   {hasMultiple && (
@@ -153,7 +156,6 @@ function VehicleDetailPage() {
                   )}
                 </div>
 
-                {/* Miniaturas */}
                 {hasMultiple && (
                   <div className="flex gap-2.5 overflow-x-auto mt-3 pb-1">
                     {gallery.map((photo, i) => (
@@ -180,20 +182,18 @@ function VehicleDetailPage() {
               </div>
             )}
 
-            {/* Descrição */}
             {vehicle.description && (
               <div className="mb-10">
-                <h3 className="font-serif text-2xl font-medium mb-4">Descrição</h3>
+                <h3 className="text-xl font-medium mb-4">Descrição</h3>
                 <p className="text-black/80 text-[0.9375rem] leading-relaxed whitespace-pre-line">
                   {vehicle.description}
                 </p>
               </div>
             )}
 
-            {/* Especificações */}
             {specs.length > 0 && (
               <div className="mb-10">
-                <h3 className="font-serif text-2xl font-medium mb-5">Especificações</h3>
+                <h3 className="text-xl font-medium mb-5">Especificações</h3>
                 <div className="bg-white rounded-2xl border border-black/5 overflow-hidden">
                   <div className="grid grid-cols-2 divide-x divide-y divide-black/5">
                     {specs.map((spec) => (
@@ -209,10 +209,9 @@ function VehicleDetailPage() {
               </div>
             )}
 
-            {/* Equipamento */}
             {equipamento.length > 0 && (
               <div>
-                <h3 className="font-serif text-2xl font-medium mb-5">Equipamento</h3>
+                <h3 className="text-xl font-medium mb-5">Equipamento</h3>
                 <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8">
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                     {equipamento.map((item) => (
@@ -227,12 +226,19 @@ function VehicleDetailPage() {
             )}
           </div>
 
-          {/* Coluna direita: contacto */}
           <div className="lg:col-span-1">
-            <div className="bg-[#C2A07A] rounded-3xl p-8 lg:sticky lg:top-24 shadow-lg text-white">
-              <h3 className="font-serif text-2xl font-medium mb-2">Tem interesse?</h3>
+            <div
+              className={`rounded-3xl p-8 lg:sticky lg:top-24 shadow-lg text-white ${
+                vendida ? "bg-[#2a2a2a]" : "bg-[#C2A07A]"
+              }`}
+            >
+              <h3 className="text-xl font-medium mb-2">
+                {vendida ? "Mais um cliente satisfeito" : "Tem interesse?"}
+              </h3>
               <p className="text-white/80 text-sm mb-8">
-                {brevemente
+                {vendida
+                  ? "Esta autocaravana já foi entregue ao novo dono. Procura algo parecido? Deixe o contacto e avisamos quando entrar algo semelhante."
+                  : brevemente
                   ? "Esta autocaravana ainda não chegou ao nosso stand. Deixe o seu contacto e avisamos assim que estiver disponível."
                   : "Deixe o seu contacto para agendarmos uma visita ou para fazer uma proposta."}
               </p>
@@ -259,9 +265,13 @@ function VehicleDetailPage() {
                   type="submit"
                   className="w-full bg-white text-black text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-white/90 transition-colors mt-2 shadow-sm"
                 >
-                  {brevemente ? "Avisar-me quando chegar" : "Agendar Visita"}
+                  {vendida
+                    ? "Avisar-me de algo semelhante"
+                    : brevemente
+                    ? "Avisar-me quando chegar"
+                    : "Agendar Visita"}
                 </button>
-                {!brevemente && (
+                {!brevemente && !vendida && (
                   <button
                     type="button"
                     onClick={(e) => enviar(e, "proposta")}

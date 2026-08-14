@@ -19,7 +19,7 @@ function AdminPage() {
   };
 
   const previewVehicle = {
-    id: 0,
+    id: "preview",
     name: form.name || "Nome da autocaravana",
     year: form.year || "----",
     km: form.km ? `${form.km} km` : "-- km",

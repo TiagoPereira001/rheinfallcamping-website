@@ -60,7 +60,7 @@ function StockPage() {
   const filtrados = useMemo(() => {
     const faixaPreco = OPCOES_PRECO[precoIdx];
 
-    return vehicles.filter((v) => {
+    const resultado = vehicles.filter((v) => {
       const preco = parseNumero(v.price);
       const anoVeiculo = parseNumero(v.year);
 
@@ -70,6 +70,13 @@ function StockPage() {
       const marcaOk = marcas.length === 0 || marcas.includes(marcaDoNome(v.name));
 
       return precoOk && anoOk && marcaOk;
+    });
+
+    // As já vendidas ficam no fim da lista
+    return resultado.sort((a, b) => {
+      const aVendida = a.status === "vendida" ? 1 : 0;
+      const bVendida = b.status === "vendida" ? 1 : 0;
+      return aVendida - bVendida;
     });
   }, [vehicles, precoIdx, ano, marcas]);
 
