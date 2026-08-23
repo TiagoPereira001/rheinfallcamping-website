@@ -43,6 +43,19 @@
   </head>
 
   <body>
+        <!-- Formulário escondido para o Netlify detetar durante o build.
+         O formulário real está em React (VenderPage) e submete para aqui. -->
+    <form name="vender-autocaravana" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="nome" />
+      <input type="text" name="contacto" />
+      <input type="text" name="marca" />
+      <input type="text" name="ano" />
+      <input type="text" name="km" />
+      <input type="text" name="preco" />
+      <textarea name="notas"></textarea>
+      <input name="bot-field" />
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
