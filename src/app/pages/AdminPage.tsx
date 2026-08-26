@@ -12,6 +12,7 @@ import { db } from "../lib/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
 import type { Vehicle } from "../hooks/useVehicles";
+import ImageUploader from "../components/ImageUploader";
 
 const vazio = {
   name: "", year: "", km: "", price: "", status: "",
@@ -35,7 +36,6 @@ function Login() {
     try {
       await entrar(email, password);
     } catch {
-      // Mensagem genérica de propósito: não revelamos se o email existe
       setErro("Email ou palavra-passe incorretos.");
     } finally {
       setAEntrar(false);
@@ -100,12 +100,10 @@ function Painel() {
     setAGravar(true);
     setMsg("");
     try {
-      // Converte as linhas de texto em arrays, ignorando linhas vazias
       const dados: Record<string, unknown> = { ...form };
       dados.images = form.images.split("\n").map((s) => s.trim()).filter(Boolean);
       dados.features = form.features.split("\n").map((s) => s.trim()).filter(Boolean);
 
-      // Remove campos vazios para não guardar lixo no Firestore
       Object.keys(dados).forEach((k) => {
         const v = dados[k];
         if (v === "" || (Array.isArray(v) && v.length === 0)) delete dados[k];
@@ -114,11 +112,12 @@ function Painel() {
       if (aEditar) {
         await updateDoc(doc(db, "vehicles", aEditar), dados);
         setMsg("Autocaravana atualizada.");
+        // Não limpamos: continua a editar a mesma, no mesmo sítio
       } else {
         await addDoc(collection(db, "vehicles"), dados);
         setMsg("Autocaravana adicionada.");
+        limpar();
       }
-      limpar();
       await carregar();
     } catch (err) {
       console.error(err);
@@ -196,7 +195,6 @@ function Painel() {
           </div>
         )}
 
-        {/* Formulário */}
         <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8 mb-10">
           <h2 className="text-black text-lg font-medium mb-6">
             {aEditar ? "Editar autocaravana" : "Adicionar autocaravana"}
@@ -223,13 +221,11 @@ function Painel() {
             </div>
 
             <div>
-              <label className={label}>Fotos — um caminho por linha</label>
-              <textarea value={form.images} onChange={alterar("images")} rows={4}
-                placeholder={"/images/pasta/foto_1.webp\n/images/pasta/foto_2.webp"}
-                className={input + " resize-none font-mono text-xs"} />
-              <p className="text-black/40 text-xs mt-1.5">
-                A primeira foto é a que aparece no card do stock.
-              </p>
+              <label className={label}>Fotos</label>
+              <ImageUploader
+                urls={form.images ? form.images.split("\n").filter(Boolean) : []}
+                onChange={(novas) => setForm((p) => ({ ...p, images: novas.join("\n") }))}
+              />
             </div>
 
             <div>
@@ -262,7 +258,6 @@ function Painel() {
           </form>
         </div>
 
-        {/* Lista */}
         <h2 className="text-black text-lg font-medium mb-4">
           No stock {!aCarregar && `(${lista.length})`}
         </h2>
