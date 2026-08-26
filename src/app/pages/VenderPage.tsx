@@ -142,7 +142,7 @@ function VenderPage() {
                 </label>
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                 <div>
                   <label htmlFor="nome" className="block text-black text-sm font-medium mb-2">
                     Nome
@@ -184,7 +184,7 @@ function VenderPage() {
                 </div>
                 <div>
                   <label htmlFor="preco" className="block text-black text-sm font-medium mb-2">
-                    Ideia de preço <span className="text-black/40 font-normal">(opcional)</span>
+                    Preço <span className="text-black/40 font-normal">(opcional)</span>
                   </label>
                   <input id="preco" name="preco" type="text" value={form.preco}
                     onChange={handleChange("preco")} placeholder="€ 25.000" className={inputClass} />

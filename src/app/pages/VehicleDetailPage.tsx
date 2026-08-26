@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ChevronLeft, ChevronRight, Check, ImageIcon } from "lucide-react";
-import { useVehicles } from "../hooks/useVehicles";
+import { useVehicle } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
 import { usePageTitle } from "../hooks/usePageTitle";
+import ShareButtons from "../components/ShareButtons";
 
 function VehicleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { vehicles, loading } = useVehicles();
+  const { vehicle, loading } = useVehicle(id);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [form, setForm] = useState({ nome: "", contacto: "" });
   const [erro, setErro] = useState("");
-  const vehicle = vehicles.find((v) => String(v.id) === id);
 
   usePageTitle(
     vehicle?.name,
@@ -42,7 +42,6 @@ function VehicleDetailPage() {
   const brevemente = vehicle.status === "brevemente";
   const vendida = vehicle.status === "vendida";
 
-  // Galeria: usa "images" se existir, senão cai para o campo antigo "image"
   const gallery = vehicle.images?.length ? vehicle.images : vehicle.image ? [vehicle.image] : [];
   const hasMultiple = gallery.length > 1;
   const currentPhoto = gallery[photoIndex] ?? gallery[0];
@@ -224,6 +223,8 @@ function VehicleDetailPage() {
                 </div>
               </div>
             )}
+
+            <ShareButtons titulo={vehicle.name} />
           </div>
 
           <div className="lg:col-span-1">
