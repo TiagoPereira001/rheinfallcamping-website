@@ -5,8 +5,7 @@ import VehicleCard from "../components/VehicleCard";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useStructuredData } from "../hooks/useStructuredData";
 import { WHATSAPP_NUMBER, LOCATION } from "../data/config";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../lib/firebase";
+
 
 
 // Fotos da página inicial. Mete os ficheiros em public/images/
