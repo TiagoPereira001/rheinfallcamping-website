@@ -5,6 +5,8 @@ import { useVehicle } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
 import { usePageTitle } from "../hooks/usePageTitle";
 import ShareButtons from "../components/ShareButtons";
+import { useStructuredData } from "../hooks/useStructuredData";
+import { parseNumero } from "../lib/utils";
 
 function VehicleDetailPage() {
   const { id } = useParams();
@@ -19,6 +21,49 @@ function VehicleDetailPage() {
     vehicle
       ? `${vehicle.name}${vehicle.year ? ` de ${vehicle.year}` : ""}. Autocaravana usada na zona da Covilhã.`
       : undefined
+  );
+
+    // Dados estruturados para o Google mostrar preço e ano nos resultados
+  useStructuredData(
+    vehicle
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Car",
+          name: vehicle.name,
+          ...(vehicle.description && { description: vehicle.description }),
+          ...(vehicle.images?.length && { image: vehicle.images }),
+          ...(vehicle.year && { vehicleModelDate: vehicle.year }),
+          ...(vehicle.fuel && { fuelType: vehicle.fuel }),
+          ...(vehicle.transmission && { vehicleTransmission: vehicle.transmission }),
+          ...(parseNumero(vehicle.km) && {
+            mileageFromOdometer: {
+              "@type": "QuantitativeValue",
+              value: parseNumero(vehicle.km),
+              unitCode: "KMT",
+            },
+          }),
+          ...(parseNumero(vehicle.seats) && {
+            seatingCapacity: parseNumero(vehicle.seats),
+          }),
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "EUR",
+            ...(parseNumero(vehicle.price) && { price: parseNumero(vehicle.price) }),
+            availability:
+              vehicle.status === "vendida"
+                ? "https://schema.org/SoldOut"
+                : vehicle.status === "brevemente"
+                ? "https://schema.org/PreOrder"
+                : "https://schema.org/InStock",
+            itemCondition: "https://schema.org/UsedCondition",
+            seller: {
+              "@type": "AutoDealer",
+              name: "RheinfallCamping",
+              areaServed: "Covilhã, Portugal",
+            },
+          },
+        }
+      : null
   );
 
   if (loading) {

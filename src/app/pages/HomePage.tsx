@@ -3,6 +3,8 @@ import { ArrowUpRight } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import VehicleCard from "../components/VehicleCard";
 import { usePageTitle } from "../hooks/usePageTitle";
+import { useStructuredData } from "../hooks/useStructuredData";
+import { WHATSAPP_NUMBER, LOCATION } from "../data/config";
 
 
 // Fotos da página inicial. Mete os ficheiros em public/images/
@@ -14,6 +16,23 @@ function HomePage() {
   usePageTitle();
   const navigate = useNavigate();
   const { vehicles, loading, error } = useVehicles();
+
+    // Diz ao Google que isto é um stand de automóveis real, na Covilhã
+  useStructuredData({
+    "@context": "https://schema.org",
+    "@type": "AutoDealer",
+    name: "RheinfallCamping",
+    description:
+      "Compra e venda de autocaravanas usadas na zona da Covilhã. Mais de 10 anos a preparar cada veículo antes de vender.",
+    url: "https://rheinfallcamping.pt",
+    telephone: `+${WHATSAPP_NUMBER}`,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: LOCATION,
+      addressCountry: "PT",
+    },
+    areaServed: "Portugal",
+  });
 
   return (
     <>
