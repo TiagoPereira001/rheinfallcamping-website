@@ -13,6 +13,7 @@ import { useAuth } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
 import type { Vehicle } from "../hooks/useVehicles";
 import ImageUploader from "../components/ImageUploader";
+import LeadsPanel from "../components/LeadsPanel";
 
 const vazio = {
   name: "", year: "", km: "", price: "", status: "",
@@ -77,6 +78,7 @@ function Painel() {
   const [aEditar, setAEditar] = useState<string | null>(null);
   const [aGravar, setAGravar] = useState(false);
   const [msg, setMsg] = useState("");
+  const [aba, setAba] = useState<"stock" | "pedidos">("stock");
 
   const carregar = async () => {
     setACarregar(true);
@@ -186,6 +188,26 @@ function Painel() {
           </button>
         </div>
 
+        <div className="flex gap-2 mb-8 border-b border-black/10">
+          <button onClick={() => setAba("stock")}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+              aba === "stock" ? "border-black text-black" : "border-transparent text-black/50 hover:text-black"
+            }`}>
+            Stock
+          </button>
+          <button onClick={() => setAba("pedidos")}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+              aba === "pedidos" ? "border-black text-black" : "border-transparent text-black/50 hover:text-black"
+            }`}>
+            Pedidos de venda
+          </button>
+        </div>
+
+        {aba === "pedidos" && <LeadsPanel />}
+
+        {aba === "stock" && (
+        <>
+
         {msg && (
           <div className="bg-white border border-black/10 rounded-xl px-4 py-3 mb-6 text-sm flex items-center justify-between">
             <span>{msg}</span>
@@ -290,6 +312,8 @@ function Painel() {
               </div>
             ))}
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

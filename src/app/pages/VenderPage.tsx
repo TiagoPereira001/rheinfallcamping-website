@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, MessageCircle } from "lucide-react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../lib/firebase";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { whatsappLink } from "../data/config";
 
@@ -41,23 +43,31 @@ function VenderPage() {
 
     setAEnviar(true);
     try {
-      const dados = new URLSearchParams();
-      dados.append("form-name", "vender-autocaravana");
-      Object.entries(form).forEach(([chave, valor]) => dados.append(chave, valor));
-
-      const resposta = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: dados.toString(),
+      await addDoc(collection(db, "leads"), {
+        nome: form.nome.trim(),
+        contacto: form.contacto.trim(),
+        marca: form.marca.trim(),
+        ano: form.ano.trim(),
+        km: form.km.trim(),
+        preco: form.preco.trim(),
+        notas: form.notas.trim(),
+        criadoEm: serverTimestamp(),
+        tratado: false,
       });
-
-      if (!resposta.ok) throw new Error("Falha no envio");
       setEnviado(true);
     } catch {
       setErro("Não foi possível enviar. Tente novamente ou contacte-nos por telefone.");
     } finally {
       setAEnviar(false);
     }
+  };
+
+  const abrirWhatsApp = () => {
+    window.open(
+      whatsappLink("Olá, acabei de submeter os dados da minha autocaravana no site."),
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   const inputClass =
@@ -75,16 +85,13 @@ function VenderPage() {
             Vamos analisar a informação da sua autocaravana e entramos em contacto
             nos próximos dias. Se preferir falar já connosco, use o WhatsApp.
           </p>
-          
-          {/* O erro estava aqui. Faltava o "<a" antes do href */}
-          <a
-            href={whatsappLink("Olá, acabei de submeter os dados da minha autocaravana no site.")}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={abrirWhatsApp}
             className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white text-[0.9375rem] font-medium px-7 py-3.5 rounded-xl hover:bg-[#20bd5a] transition-colors"
           >
+            <MessageCircle size={17} />
             Falar por WhatsApp
-          </a>
+          </button>
         </div>
       </div>
     );
@@ -127,22 +134,9 @@ function VenderPage() {
               Quanto mais souber, melhor a avaliação. Mas não faz mal se não souber tudo.
             </p>
 
-            <form
-              name="vender-autocaravana"
-              method="POST"
-              data-netlify="true"
-              netlify-honeypot="bot-field"
-              onSubmit={handleSubmit}
-              className="space-y-5"
-            >
-              <input type="hidden" name="form-name" value="vender-autocaravana" />
-              <p className="hidden">
-                <label>
-                  Não preencher: <input name="bot-field" />
-                </label>
-              </p>
+            <form onSubmit={handleSubmit} className="space-y-5">
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                 <div>
                   <label htmlFor="nome" className="block text-black text-sm font-medium mb-2">
                     Nome
@@ -167,7 +161,7 @@ function VenderPage() {
                   onChange={handleChange("marca")} placeholder="Ex: Fiat Ducato Rapido" className={inputClass} />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                 <div>
                   <label htmlFor="ano" className="block text-black text-sm font-medium mb-2">
                     Ano <span className="text-black/40 font-normal">(opcional)</span>
