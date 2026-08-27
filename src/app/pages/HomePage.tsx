@@ -21,9 +21,12 @@ function HomePage() {
         {HERO_IMAGE && (
           <>
             <img
-              src={HERO_IMAGE}
+              src="/images/foto_padrao_desktop.webp"
+              srcSet="/images/foto_padrao_mobile.webp 800w, /images/foto_padrao_desktop.webp 1600w"
+              sizes="100vw"
               alt=""
               aria-hidden="true"
+              fetchPriority="high"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />
