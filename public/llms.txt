@@ -1,0 +1,18 @@
+# RheinfallCamping
+
+> Compra e venda de autocaravanas usadas na zona da Covilhã, Portugal. Projeto familiar com mais de 10 anos de experiência. Cada autocaravana é preparada antes de ser vendida.
+
+Negócio familiar dirigido por um particular que compra, prepara e vende autocaravanas usadas. As visitas são feitas por marcação prévia. Também compramos autocaravanas a particulares.
+
+## Páginas
+
+- [Início](https://rheinfallcamping.pt/): Apresentação do negócio e autocaravanas em destaque
+- [Stock](https://rheinfallcamping.pt/stock): Todas as autocaravanas disponíveis, com filtros por preço, ano e marca
+- [Vender a minha](https://rheinfallcamping.pt/vender): Formulário para quem quer vender uma autocaravana
+- [Contactos](https://rheinfallcamping.pt/contactos): Telefone, WhatsApp e marcação de visitas
+
+## Notas
+
+- O stock muda com frequência; consulte a página de stock para informação atual
+- As autocaravanas podem estar marcadas como "Para venda", "Brevemente" ou "Vendida"
+- Localização: Covilhã, Portugal
