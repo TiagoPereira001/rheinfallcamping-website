@@ -25,6 +25,7 @@ function Footer() {
             <ul className="space-y-2.5">
               <li><Link to="/" className="text-white/60 hover:text-white text-sm transition-colors">Início</Link></li>
               <li><Link to="/stock" className="text-white/60 hover:text-white text-sm transition-colors">Stock</Link></li>
+              <li><Link to="/vender" className="text-white/60 hover:text-white text-sm transition-colors">Vender a minha</Link></li>
               <li><Link to="/contactos" className="text-white/60 hover:text-white text-sm transition-colors">Contactos</Link></li>
             </ul>
           </div>
@@ -50,9 +51,14 @@ function Footer() {
           <span className="text-white/25 text-xs">
             © {new Date().getFullYear()} RheinfallCamping
           </span>
-          <span className="text-white/25 text-xs">
-            Todos os direitos reservados
-          </span>
+          <div className="flex items-center gap-5">
+            <Link to="/termos" className="text-white/40 hover:text-white/70 text-xs transition-colors">
+              Termos e condições
+            </Link>
+            <Link to="/privacidade" className="text-white/40 hover:text-white/70 text-xs transition-colors">
+              Privacidade e cookies
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

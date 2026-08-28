@@ -9,6 +9,7 @@ import VehicleDetailPage from "./pages/VehicleDetailPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import PrivacidadePage from "./pages/PrivacidadePage";
 import CookieBanner from "./components/CookieBanner";
+import TermosPage from "./pages/TermosPage";
 
 // Carregados só quando alguém visita estas páginas
 const AdminPage = lazy(() => import("./pages/AdminPage"));
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/vender" element={<VenderPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/privacidade" element={<PrivacidadePage />} />
+            <Route path="/termos" element={<TermosPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
