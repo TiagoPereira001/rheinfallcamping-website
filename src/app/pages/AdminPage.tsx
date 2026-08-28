@@ -321,7 +321,19 @@ function Painel() {
 }
 
 // ---------- Entrada ----------
+import { AuthProvider } from "../hooks/useAuth";
+
+// ... (resto do ficheiro igual)
+
 function AdminPage() {
+  return (
+    <AuthProvider>
+      <AdminConteudo />
+    </AuthProvider>
+  );
+}
+
+function AdminConteudo() {
   usePageTitle("Área interna");
   const { utilizador, aCarregar } = useAuth();
 
