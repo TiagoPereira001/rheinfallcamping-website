@@ -1,11 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
+  getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
   type User,
 } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { app } from "../lib/firebase";
+
+const auth = getAuth(app);
 
 type AuthContexto = {
   utilizador: User | null;
