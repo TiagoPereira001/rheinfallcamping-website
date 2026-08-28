@@ -25,7 +25,6 @@ function Footer() {
             <ul className="space-y-2.5">
               <li><Link to="/" className="text-white/60 hover:text-white text-sm transition-colors">Início</Link></li>
               <li><Link to="/stock" className="text-white/60 hover:text-white text-sm transition-colors">Stock</Link></li>
-              <li><Link to="/vender" className="text-white/60 hover:text-white text-sm transition-colors">Vender a minha</Link></li>
               <li><Link to="/contactos" className="text-white/60 hover:text-white text-sm transition-colors">Contactos</Link></li>
             </ul>
           </div>
