@@ -9,11 +9,12 @@ import {
 } from "firebase/firestore";
 import { LogOut, Plus, Pencil, Trash2, X } from "lucide-react";
 import { db } from "../lib/firebase";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth, AuthProvider } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
 import type { Vehicle } from "../hooks/useVehicles";
 import ImageUploader from "../components/ImageUploader";
 import LeadsPanel from "../components/LeadsPanel";
+import { useLeads } from "../hooks/useLeads";
 
 const vazio = {
   name: "", year: "", km: "", price: "", status: "",
@@ -79,6 +80,7 @@ function Painel() {
   const [aGravar, setAGravar] = useState(false);
   const [msg, setMsg] = useState("");
   const [aba, setAba] = useState<"stock" | "pedidos">("stock");
+  const leads = useLeads();
 
   const carregar = async () => {
     setACarregar(true);
@@ -196,14 +198,26 @@ function Painel() {
             Stock
           </button>
           <button onClick={() => setAba("pedidos")}
-            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors inline-flex items-center gap-2 ${
               aba === "pedidos" ? "border-black text-black" : "border-transparent text-black/50 hover:text-black"
             }`}>
             Pedidos de venda
+            {leads.porTratar > 0 && (
+              <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-[#b02020] text-white text-[0.6875rem] font-medium">
+                {leads.porTratar}
+              </span>
+            )}
           </button>
         </div>
 
-        {aba === "pedidos" && <LeadsPanel />}
+        {aba === "pedidos" && (
+          <LeadsPanel
+            leads={leads.leads}
+            aCarregar={leads.aCarregar}
+            erro={leads.erro}
+            recarregar={leads.recarregar}
+          />
+        )}
 
         {aba === "stock" && (
         <>
@@ -321,18 +335,6 @@ function Painel() {
 }
 
 // ---------- Entrada ----------
-import { AuthProvider } from "../hooks/useAuth";
-
-// ... (resto do ficheiro igual)
-
-function AdminPage() {
-  return (
-    <AuthProvider>
-      <AdminConteudo />
-    </AuthProvider>
-  );
-}
-
 function AdminConteudo() {
   usePageTitle("Área interna");
   const { utilizador, aCarregar } = useAuth();
@@ -346,6 +348,14 @@ function AdminConteudo() {
   }
 
   return utilizador ? <Painel /> : <Login />;
+}
+
+function AdminPage() {
+  return (
+    <AuthProvider>
+      <AdminConteudo />
+    </AuthProvider>
+  );
 }
 
 export default AdminPage;

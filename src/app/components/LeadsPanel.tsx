@@ -1,17 +1,7 @@
-import { useEffect, useState } from "react";
-import {
-  collection, getDocs, query, orderBy, updateDoc, deleteDoc, doc,
-} from "firebase/firestore";
+import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { Trash2, Check, Clock } from "lucide-react";
 import { db } from "../lib/firebase";
-
-type Lead = {
-  id: string;
-  nome?: string; contacto?: string; marca?: string;
-  ano?: string; km?: string; preco?: string; notas?: string;
-  tratado?: boolean;
-  criadoEm?: { seconds: number };
-};
+import type { Lead } from "../hooks/useLeads";
 
 function dataLegivel(l: Lead) {
   if (!l.criadoEm?.seconds) return "";
@@ -21,36 +11,23 @@ function dataLegivel(l: Lead) {
   });
 }
 
-function LeadsPanel() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [aCarregar, setACarregar] = useState(true);
-  const [erro, setErro] = useState("");
+type Props = {
+  leads: Lead[];
+  aCarregar: boolean;
+  erro: string;
+  recarregar: () => void;
+};
 
-  const carregar = async () => {
-    setACarregar(true);
-    try {
-      const q = query(collection(db, "leads"), orderBy("criadoEm", "desc"));
-      const snap = await getDocs(q);
-      setLeads(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Lead, "id">) })));
-    } catch (e) {
-      console.error(e);
-      setErro("Não foi possível carregar os pedidos.");
-    } finally {
-      setACarregar(false);
-    }
-  };
-
-  useEffect(() => { carregar(); }, []);
-
+function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
   const alternarTratado = async (l: Lead) => {
     await updateDoc(doc(db, "leads", l.id), { tratado: !l.tratado });
-    carregar();
+    recarregar();
   };
 
   const apagar = async (l: Lead) => {
     if (!confirm(`Apagar o pedido de ${l.nome || "sem nome"}?`)) return;
     await deleteDoc(doc(db, "leads", l.id));
-    carregar();
+    recarregar();
   };
 
   const porTratar = leads.filter((l) => !l.tratado).length;
