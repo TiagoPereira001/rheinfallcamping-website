@@ -62,12 +62,7 @@ function TermosPage() {
           </section>
 
           <section>
-            <h2 className="text-black text-xl font-medium mb-3">Garantia e direitos do consumidor</h2>
-            <p className="mb-4">
-              A venda de veículos usados está sujeita à legislação portuguesa de defesa do
-              consumidor, incluindo o regime de garantia legal aplicável a bens em segunda mão.
-              Os seus direitos legais não são afetados por nada que esteja escrito neste site.
-            </p>
+            <h2 className="text-black text-xl font-medium mb-3">Direitos do consumidor</h2>
             <p>
               As condições concretas de cada negócio — garantia, prazos e o que está incluído —
               são acordadas por escrito no momento da venda.
