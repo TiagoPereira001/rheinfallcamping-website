@@ -1,0 +1,61 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autorizado() {
+      return request.auth != null
+        && request.auth.uid in [
+          "UID_DO_ADMIN"
+        ];
+    }
+
+    match /vehicles/{doc} {
+      // O catálogo é público.
+      allow read: if true;
+
+      // Só o administrador pode criar/editar/apagar.
+      allow write: if autorizado();
+    }
+
+    match /leads/{doc} {
+      // Apenas administrador pode ver ou alterar leads.
+      allow read, update, delete: if autorizado();
+
+      // O formulário público pode criar leads,
+      // mas apenas com este schema.
+      allow create: if
+        request.resource.data.keys().hasOnly([
+          'nome',
+          'contacto',
+          'marca',
+          'ano',
+          'km',
+          'preco',
+          'notas',
+          'criadoEm',
+          'tratado'
+        ])
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() > 0
+        && request.resource.data.nome.size() < 100
+
+        && request.resource.data.contacto is string
+        && request.resource.data.contacto.size() > 0
+        && request.resource.data.contacto.size() < 100
+
+        && request.resource.data.marca is string
+        && request.resource.data.marca.size() > 0
+        && request.resource.data.marca.size() < 150
+
+        && request.resource.data.ano is string
+        && request.resource.data.km is string
+        && request.resource.data.preco is string
+
+        && request.resource.data.notas is string
+        && request.resource.data.notas.size() < 2000
+
+        && request.resource.data.tratado == false;
+    }
+  }
+}
