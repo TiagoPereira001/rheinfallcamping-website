@@ -2,22 +2,29 @@ import { useEffect } from "react";
 
 const ID = "dados-estruturados";
 
-/**
- * Injeta dados estruturados (schema.org) na página, em JSON-LD.
- * O Google usa isto para mostrar preço, ano e disponibilidade
- * diretamente nos resultados de pesquisa.
- */
+function serializarSeguro(dados: object) {
+  return JSON.stringify(dados)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 export function useStructuredData(dados: object | null) {
   useEffect(() => {
-    // Remove o anterior, se existir, para não acumular ao navegar
     document.getElementById(ID)?.remove();
 
-    if (!dados) return;
+    if (!dados) {
+      return;
+    }
 
     const script = document.createElement("script");
+
     script.id = ID;
     script.type = "application/ld+json";
-    script.textContent = JSON.stringify(dados);
+    script.textContent = serializarSeguro(dados);
+
     document.head.appendChild(script);
 
     return () => {

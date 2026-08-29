@@ -10,8 +10,11 @@ import { app } from "../lib/firebase";
 
 const auth = getAuth(app);
 
+const ADMIN_UID = "DyijvXsSBzgL5SJgtWI8DedxTkk2";
+
 type AuthContexto = {
   utilizador: User | null;
+  isAdmin: boolean;
   aCarregar: boolean;
   entrar: (email: string, password: string) => Promise<void>;
   sair: () => Promise<void>;
@@ -24,24 +27,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [aCarregar, setACarregar] = useState(true);
 
   useEffect(() => {
-    // O Firebase avisa-nos sempre que a sessão muda (entrar, sair, expirar)
     const parar = onAuthStateChanged(auth, (u) => {
       setUtilizador(u);
       setACarregar(false);
     });
+
     return parar;
   }, []);
 
   const entrar = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    await signInWithEmailAndPassword(auth, email.trim(), password);
   };
 
   const sair = async () => {
     await signOut(auth);
   };
 
+  const isAdmin = utilizador?.uid === ADMIN_UID;
+
   return (
-    <Contexto.Provider value={{ utilizador, aCarregar, entrar, sair }}>
+    <Contexto.Provider
+      value={{
+        utilizador,
+        isAdmin,
+        aCarregar,
+        entrar,
+        sair,
+      }}
+    >
       {children}
     </Contexto.Provider>
   );
@@ -49,6 +62,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(Contexto);
-  if (!ctx) throw new Error("useAuth tem de estar dentro de <AuthProvider>");
+
+  if (!ctx) {
+    throw new Error("useAuth tem de estar dentro de <AuthProvider>");
+  }
+
   return ctx;
 }

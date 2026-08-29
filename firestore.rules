@@ -5,57 +5,118 @@ service cloud.firestore {
 
     function autorizado() {
       return request.auth != null
-        && request.auth.uid in [
-          "UID_DO_ADMIN"
-        ];
+        && request.auth.uid == DyijvXsSBzgL5SJgtWI8DedxTkk2;
+    }
+
+    function camposVeiculoValidos() {
+      return request.resource.data.keys().hasOnly([
+        'name',
+        'year',
+        'km',
+        'price',
+        'image',
+        'images',
+        'status',
+        'description',
+        'registration',
+        'engine',
+        'power',
+        'fuel',
+        'transmission',
+        'seats',
+        'beds',
+        'condition',
+        'warranty',
+        'features'
+      ])
+      && request.resource.data.name is string
+      && request.resource.data.name.size() > 0
+      && request.resource.data.name.size() < 200
+      && (!('year' in request.resource.data) || request.resource.data.year is string)
+      && (!('km' in request.resource.data) || request.resource.data.km is string)
+      && (!('price' in request.resource.data) || request.resource.data.price is string)
+      && (!('image' in request.resource.data) || request.resource.data.image is string)
+      && (!('images' in request.resource.data) || request.resource.data.images is list)
+      && (!('status' in request.resource.data)
+          || request.resource.data.status in ['', 'brevemente', 'vendida'])
+      && (!('description' in request.resource.data) || request.resource.data.description is string)
+      && (!('registration' in request.resource.data) || request.resource.data.registration is string)
+      && (!('engine' in request.resource.data) || request.resource.data.engine is string)
+      && (!('power' in request.resource.data) || request.resource.data.power is string)
+      && (!('fuel' in request.resource.data) || request.resource.data.fuel is string)
+      && (!('transmission' in request.resource.data) || request.resource.data.transmission is string)
+      && (!('seats' in request.resource.data) || request.resource.data.seats is string)
+      && (!('beds' in request.resource.data) || request.resource.data.beds is string)
+      && (!('condition' in request.resource.data) || request.resource.data.condition is string)
+      && (!('warranty' in request.resource.data) || request.resource.data.warranty is string)
+      && (!('features' in request.resource.data) || request.resource.data.features is list);
+    }
+
+    function leadValido() {
+      return request.resource.data.keys().hasOnly([
+        'nome',
+        'contacto',
+        'marca',
+        'ano',
+        'km',
+        'preco',
+        'notas',
+        'criadoEm',
+        'tratado'
+      ])
+      && request.resource.data.nome is string
+      && request.resource.data.nome.size() > 0
+      && request.resource.data.nome.size() < 100
+
+      && request.resource.data.contacto is string
+      && request.resource.data.contacto.size() > 0
+      && request.resource.data.contacto.size() < 100
+
+      && request.resource.data.marca is string
+      && request.resource.data.marca.size() > 0
+      && request.resource.data.marca.size() < 150
+
+      && request.resource.data.ano is string
+      && request.resource.data.ano.size() < 20
+
+      && request.resource.data.km is string
+      && request.resource.data.km.size() < 30
+
+      && request.resource.data.preco is string
+      && request.resource.data.preco.size() < 50
+
+      && request.resource.data.notas is string
+      && request.resource.data.notas.size() < 2000
+
+      && request.resource.data.tratado == false;
     }
 
     match /vehicles/{doc} {
-      // O catálogo é público.
       allow read: if true;
 
-      // Só o administrador pode criar/editar/apagar.
-      allow write: if autorizado();
+      allow create: if autorizado() && camposVeiculoValidos();
+
+      allow update: if autorizado() && camposVeiculoValidos();
+
+      allow delete: if autorizado();
     }
 
     match /leads/{doc} {
-      // Apenas administrador pode ver ou alterar leads.
-      allow read, update, delete: if autorizado();
+      // Só o administrador vê os dados pessoais dos leads.
+      allow read: if autorizado();
 
-      // O formulário público pode criar leads,
-      // mas apenas com este schema.
-      allow create: if
-        request.resource.data.keys().hasOnly([
-          'nome',
-          'contacto',
-          'marca',
-          'ano',
-          'km',
-          'preco',
-          'notas',
-          'criadoEm',
-          'tratado'
-        ])
-        && request.resource.data.nome is string
-        && request.resource.data.nome.size() > 0
-        && request.resource.data.nome.size() < 100
+      // Só o administrador pode apagar.
+      allow delete: if autorizado();
 
-        && request.resource.data.contacto is string
-        && request.resource.data.contacto.size() > 0
-        && request.resource.data.contacto.size() < 100
+      // O público pode criar leads, mas não pode escolher
+      // "tratado" como true nem adicionar outros campos.
+      allow create: if leadValido();
 
-        && request.resource.data.marca is string
-        && request.resource.data.marca.size() > 0
-        && request.resource.data.marca.size() < 150
-
-        && request.resource.data.ano is string
-        && request.resource.data.km is string
-        && request.resource.data.preco is string
-
-        && request.resource.data.notas is string
-        && request.resource.data.notas.size() < 2000
-
-        && request.resource.data.tratado == false;
+      // O painel atual só precisa de alterar "tratado".
+      allow update: if autorizado()
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['tratado'])
+        && request.resource.data.tratado is bool;
     }
   }
 }

@@ -337,7 +337,8 @@ function Painel() {
 // ---------- Entrada ----------
 function AdminConteudo() {
   usePageTitle("Área interna");
-  const { utilizador, aCarregar } = useAuth();
+
+  const { utilizador, isAdmin, aCarregar, sair } = useAuth();
 
   if (aCarregar) {
     return (
@@ -347,7 +348,34 @@ function AdminConteudo() {
     );
   }
 
-  return utilizador ? <Painel /> : <Login />;
+  if (!utilizador) {
+    return <Login />;
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="bg-[#f4f4f2] min-h-screen flex items-center justify-center px-6">
+        <div className="text-center max-w-sm">
+          <h1 className="text-black text-xl font-medium mb-2">
+            Acesso negado
+          </h1>
+
+          <p className="text-black/60 text-sm mb-6">
+            Esta área está reservada ao administrador.
+          </p>
+
+          <button
+            onClick={sair}
+            className="text-black text-sm underline underline-offset-4"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return <Painel />;
 }
 
 function AdminPage() {
@@ -357,5 +385,6 @@ function AdminPage() {
     </AuthProvider>
   );
 }
+  
 
 export default AdminPage;
