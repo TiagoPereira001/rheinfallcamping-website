@@ -13,13 +13,13 @@ function Footer() {
             <span className="text-white font-semibold text-sm block mb-4">
               RheinfallCamping
             </span>
-            <p className="text-white/50 text-sm leading-relaxed">
+            <p className="text-white/70 text-sm leading-relaxed">
               Compra e venda de autocaravanas usadas, preparadas por quem percebe disto.
             </p>
           </div>
 
           <div>
-            <span className="text-white/40 text-xs font-medium uppercase tracking-wider block mb-4">
+            <span className="text-white/60 text-xs font-medium uppercase tracking-wider block mb-4">
               Páginas
             </span>
             <ul className="space-y-2.5">
@@ -47,14 +47,14 @@ function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span className="text-white/25 text-xs">
+          <span className="text-white/50 text-xs">
             © {new Date().getFullYear()} RheinfallCamping
           </span>
           <div className="flex items-center gap-5">
-            <Link to="/termos" className="text-white/40 hover:text-white/70 text-xs transition-colors">
+            <Link to="/termos" className="text-white/60 hover:text-white text-xs transition-colors">
               Termos e condições
             </Link>
-            <Link to="/privacidade" className="text-white/40 hover:text-white/70 text-xs transition-colors">
+            <Link to="/privacidade" className="text-white/60 hover:text-white text-xs transition-colors">
               Privacidade e cookies
             </Link>
           </div>

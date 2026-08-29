@@ -34,7 +34,7 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
         <h3 className="font-serif text-white text-xl font-medium mb-3 leading-snug">
           {v.name}
         </h3>
-        <div className="flex items-center gap-3 text-white/45 text-xs mb-6">
+        <div className="flex items-center gap-3 text-white/70 text-xs mb-6">
           {v.year && <span>{v.year}</span>}
           {v.year && v.km && <span className="w-px h-3 bg-white/20" />}
           {v.km && <span>{v.km}</span>}
