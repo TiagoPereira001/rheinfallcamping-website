@@ -27,34 +27,43 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 
-// O App Check é obrigatório em produção. A chave pública do reCAPTCHA não é um
-// segredo; prova apenas que o pedido vem da aplicação registada no Firebase.
-const appCheckSiteKey = obrigatoria("VITE_RECAPTCHA_ENTERPRISE_SITE_KEY");
+// App Check fica opcional enquanto a site key ainda não estiver configurada.
+// Quando a chave existir na Netlify/.env.local, o App Check é ativado
+// automaticamente sem impedir o site de arrancar quando a configuração ainda
+// não foi feita.
+const appCheckSiteKey = import.meta.env
+  .VITE_RECAPTCHA_ENTERPRISE_SITE_KEY as string | undefined;
 
-if (import.meta.env.DEV) {
-  const debugToken = import.meta.env.VITE_FIREBASE_APPCHECK_DEBUG_TOKEN as
-    | string
-    | undefined;
+if (appCheckSiteKey) {
+  if (import.meta.env.DEV) {
+    const debugToken = import.meta.env.VITE_FIREBASE_APPCHECK_DEBUG_TOKEN as
+      | string
+      | undefined;
 
-  if (debugToken) {
-    (globalThis as typeof globalThis & {
-      FIREBASE_APPCHECK_DEBUG_TOKEN?: string;
-    }).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
+    if (debugToken) {
+      (globalThis as typeof globalThis & {
+        FIREBASE_APPCHECK_DEBUG_TOKEN?: string;
+      }).FIREBASE_APPCHECK_DEBUG_TOKEN = debugToken;
+    }
   }
+
+  initializeAppCheck(app, {
+    provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+} else if (import.meta.env.DEV) {
+  console.warn(
+    "Firebase App Check não está configurado. Configure VITE_RECAPTCHA_ENTERPRISE_SITE_KEY antes de ativar o enforcement no backend.",
+  );
 }
 
-initializeAppCheck(app, {
-  provider: new ReCaptchaEnterpriseProvider(appCheckSiteKey),
-  isTokenAutoRefreshEnabled: true,
-});
-
-// Não gravamos dados nem tokens de sessão em disco: em computadores partilhados
-// a sessão administrativa desaparece quando se fecha o navegador.
+// A sessão administrativa fica apenas no armazenamento de sessão do browser.
+// Não fica persistida entre sessões do navegador.
 export const auth = initializeAuth(app, {
   persistence: browserSessionPersistence,
 });
 
-// O catálogo é público; a cache fica apenas na memória desta sessão.
+// A cache fica apenas na memória desta sessão.
 export const db = initializeFirestore(app, {
   localCache: memoryLocalCache(),
 });
