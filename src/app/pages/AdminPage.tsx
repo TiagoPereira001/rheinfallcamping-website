@@ -2,19 +2,17 @@ import { useState, useEffect } from "react";
 import {
   collection,
   getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
 } from "firebase/firestore";
 import { LogOut, Plus, Pencil, Trash2, X } from "lucide-react";
 import { db } from "../lib/firebase";
+import { api } from "../lib/functions";
 import { useAuth, AuthProvider } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
 import type { Vehicle } from "../hooks/useVehicles";
 import ImageUploader from "../components/ImageUploader";
 import LeadsPanel from "../components/LeadsPanel";
 import { useLeads } from "../hooks/useLeads";
+import { prepararVeiculo } from "./adminVehicle";
 
 const vazio = {
   name: "", year: "", km: "", price: "", status: "",
@@ -104,21 +102,14 @@ function Painel() {
     setAGravar(true);
     setMsg("");
     try {
-      const dados: Record<string, unknown> = { ...form };
-      dados.images = form.images.split("\n").map((s) => s.trim()).filter(Boolean);
-      dados.features = form.features.split("\n").map((s) => s.trim()).filter(Boolean);
-
-      Object.keys(dados).forEach((k) => {
-        const v = dados[k];
-        if (v === "" || (Array.isArray(v) && v.length === 0)) delete dados[k];
-      });
+      const dados = prepararVeiculo(form);
 
       if (aEditar) {
-        await updateDoc(doc(db, "vehicles", aEditar), dados);
+        await api.updateVehicle(aEditar, dados);
         setMsg("Autocaravana atualizada.");
         // Não limpamos: continua a editar a mesma, no mesmo sítio
       } else {
-        await addDoc(collection(db, "vehicles"), dados);
+        await api.createVehicle(dados);
         setMsg("Autocaravana adicionada.");
         limpar();
       }
@@ -138,7 +129,7 @@ function Painel() {
       power: v.power ?? "", fuel: v.fuel ?? "", transmission: v.transmission ?? "",
       seats: v.seats ?? "", beds: v.beds ?? "", condition: v.condition ?? "",
       warranty: v.warranty ?? "", description: v.description ?? "",
-      images: (v.images ?? []).join("\n"),
+      images: (v.images ?? (v.image ? [v.image] : [])).join("\n"),
       features: (v.features ?? []).join("\n"),
     });
     setAEditar(v.id);
@@ -148,7 +139,7 @@ function Painel() {
   const apagar = async (v: Vehicle) => {
     if (!confirm(`Apagar "${v.name}"? Esta ação não pode ser desfeita.`)) return;
     try {
-      await deleteDoc(doc(db, "vehicles", v.id));
+      await api.deleteVehicle(v.id);
       setMsg("Autocaravana removida.");
       await carregar();
     } catch {

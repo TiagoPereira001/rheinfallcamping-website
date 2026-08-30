@@ -9,5 +9,3 @@ export const LOCATION = "Covilhã";
 export function whatsappLink(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
-export const CLOUDINARY_CLOUD_NAME = "qqiezhhd";
-export const CLOUDINARY_PRESET = "nnzokwtg";

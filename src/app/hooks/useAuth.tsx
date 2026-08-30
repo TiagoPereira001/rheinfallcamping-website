@@ -1,16 +1,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
-  getAuth,
-  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithEmailAndPassword,
   signOut,
   type User,
 } from "firebase/auth";
-import { app } from "../lib/firebase";
-
-const auth = getAuth(app);
-
-const ADMIN_UID = "DyijvXsSBzgL5SJgtWI8DedxTkk2";
+import { auth } from "../lib/firebase";
 
 type AuthContexto = {
   utilizador: User | null;
@@ -24,15 +19,39 @@ const Contexto = createContext<AuthContexto | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [utilizador, setUtilizador] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [aCarregar, setACarregar] = useState(true);
 
   useEffect(() => {
-    const parar = onAuthStateChanged(auth, (u) => {
+    let ativo = true;
+
+    const parar = onIdTokenChanged(auth, async (u) => {
+      if (!ativo) return;
+
       setUtilizador(u);
-      setACarregar(false);
+
+      if (!u) {
+        setIsAdmin(false);
+        setACarregar(false);
+        return;
+      }
+
+      try {
+        const token = await u.getIdTokenResult();
+        if (!ativo) return;
+
+        setIsAdmin(token.claims.admin === true && u.emailVerified);
+      } catch {
+        if (ativo) setIsAdmin(false);
+      } finally {
+        if (ativo) setACarregar(false);
+      }
     });
 
-    return parar;
+    return () => {
+      ativo = false;
+      parar();
+    };
   }, []);
 
   const entrar = async (email: string, password: string) => {
@@ -42,8 +61,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const sair = async () => {
     await signOut(auth);
   };
-
-  const isAdmin = utilizador?.uid === ADMIN_UID;
 
   return (
     <Contexto.Provider

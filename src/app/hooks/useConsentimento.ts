@@ -5,6 +5,11 @@ const GA_ID = "G-4JYP96Y5BT";
 
 type Estado = "aceite" | "recusado" | null;
 
+type JanelaAnalytics = Window & {
+  dataLayer?: unknown[][];
+  gtag?: (...argumentos: unknown[]) => void;
+};
+
 // Carrega o Google Analytics apenas quando há consentimento
 function carregarAnalytics() {
   if (document.getElementById("ga-script")) return;
@@ -15,14 +20,13 @@ function carregarAnalytics() {
   s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
   document.head.appendChild(s);
 
-  const inline = document.createElement("script");
-  inline.textContent = `
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${GA_ID}', { anonymize_ip: true });
-  `;
-  document.head.appendChild(inline);
+  // Equivalente ao snippet oficial, mas sem criar um script inline. Assim a
+  // Content-Security-Policy pode manter `script-src` sem `unsafe-inline`.
+  const janela = window as JanelaAnalytics;
+  janela.dataLayer ??= [];
+  janela.gtag = (...argumentos) => janela.dataLayer?.push(argumentos);
+  janela.gtag("js", new Date());
+  janela.gtag("config", GA_ID, { anonymize_ip: true });
 }
 
 export function useConsentimento() {

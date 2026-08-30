@@ -1,11 +1,13 @@
-import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { Trash2, Check, Clock } from "lucide-react";
-import { db } from "../lib/firebase";
+import { api } from "../lib/functions";
 import type { Lead } from "../hooks/useLeads";
 
 function dataLegivel(l: Lead) {
-  if (!l.criadoEm?.seconds) return "";
-  return new Date(l.criadoEm.seconds * 1000).toLocaleDateString("pt-PT", {
+  if (!l.criadoEm) return "";
+  const data = new Date(l.criadoEm);
+  if (Number.isNaN(data.getTime())) return "";
+
+  return data.toLocaleDateString("pt-PT", {
     day: "2-digit", month: "short", year: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
@@ -20,14 +22,22 @@ type Props = {
 
 function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
   const alternarTratado = async (l: Lead) => {
-    await updateDoc(doc(db, "leads", l.id), { tratado: !l.tratado });
-    recarregar();
+    try {
+      await api.setLeadTratado(l.id, !l.tratado);
+      recarregar();
+    } catch {
+      alert("Não foi possível atualizar o pedido.");
+    }
   };
 
   const apagar = async (l: Lead) => {
     if (!confirm(`Apagar o pedido de ${l.nome || "sem nome"}?`)) return;
-    await deleteDoc(doc(db, "leads", l.id));
-    recarregar();
+    try {
+      await api.deleteLead(l.id);
+      recarregar();
+    } catch {
+      alert("Não foi possível apagar o pedido.");
+    }
   };
 
   const porTratar = leads.filter((l) => !l.tratado).length;
