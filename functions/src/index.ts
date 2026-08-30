@@ -23,11 +23,13 @@ const ORIGENS_PERMITIDAS = [
   "https://www.rheinfallcamping.pt",
   /^http:\/\/localhost:\d+$/,
 ];
+
+// App Check ainda não está configurado no projeto. Não o forçamos aqui para
+// não bloquear o site. Depois de configurar App Check no Firebase, adicionar
+// enforceAppCheck: true aqui e no frontend.
 const opcoesPublicas = {
   region: REGION,
   cors: ORIGENS_PERMITIDAS,
-  enforceAppCheck: true,
-  consumeAppCheckToken: true,
 } as const;
 
 const segredoRateLimit = defineSecret("RATE_LIMIT_SALT");
@@ -50,8 +52,6 @@ async function exigirAdmin(requisicao: CallableRequest<unknown>) {
     throw new HttpsError("permission-denied", "Acesso reservado ao administrador.");
   }
 
-  // As claims no token duram até uma hora. Confirmar o utilizador no Auth torna
-  // uma revogação efetiva de imediato, sem depender desse token antigo expirar.
   const utilizador = await getAuth().getUser(autenticacao.uid);
   if (
     utilizador.disabled ||

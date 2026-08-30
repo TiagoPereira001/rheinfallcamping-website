@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { Upload, X } from "lucide-react";
-import { api } from "../lib/functions";
+import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_PRESET } from "../data/config";
 
 type Props = {
   urls: string[];
@@ -14,46 +14,18 @@ function ImageUploader({ urls, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const enviarUma = async (ficheiro: File): Promise<string> => {
-    if (
-      !["image/jpeg", "image/png", "image/webp", "image/avif"].includes(ficheiro.type) ||
-      ficheiro.size > 10 * 1024 * 1024
-    ) {
-      throw new Error("Formato ou tamanho inválido");
-    }
-
-    const assinatura = await api.createVehicleUpload({
-      name: ficheiro.name,
-      type: ficheiro.type,
-      size: ficheiro.size,
-    });
     const dados = new FormData();
     dados.append("file", ficheiro);
-    dados.append("api_key", assinatura.apiKey);
-    dados.append("folder", assinatura.folder);
-    dados.append("public_id", assinatura.publicId);
-    dados.append("signature", assinatura.signature);
-    dados.append("tags", assinatura.tags);
-    dados.append("timestamp", String(assinatura.timestamp));
-    dados.append("unique_filename", "false");
-    dados.append("upload_preset", assinatura.uploadPreset);
-    dados.append("use_filename", "false");
+    dados.append("upload_preset", CLOUDINARY_PRESET);
 
     const resposta = await fetch(
-      `https://api.cloudinary.com/v1_1/${assinatura.cloudName}/image/upload`,
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
       { method: "POST", body: dados }
     );
 
     if (!resposta.ok) throw new Error("Falha no upload");
-    const json: unknown = await resposta.json();
-    if (
-      !json ||
-      typeof json !== "object" ||
-      typeof (json as { secure_url?: unknown }).secure_url !== "string"
-    ) {
-      throw new Error("Resposta de upload inválida");
-    }
-
-    return (json as { secure_url: string }).secure_url;
+    const json = await resposta.json();
+    return json.secure_url as string;
   };
 
   const escolherFicheiros = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +139,7 @@ function ImageUploader({ urls, onChange }: Props) {
       )}
 
       <p className="text-black/40 text-xs mt-3">
-        JPG, PNG, WebP ou AVIF até 10 MB. A primeira foto aparece no stock.
+        A primeira foto é a que aparece no stock. Use as setas para reordenar.
       </p>
     </div>
   );

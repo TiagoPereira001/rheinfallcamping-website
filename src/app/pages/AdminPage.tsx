@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import {
   collection,
   getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { LogOut, Plus, Pencil, Trash2, X } from "lucide-react";
 import { db } from "../lib/firebase";
-import { api } from "../lib/functions";
 import { useAuth, AuthProvider } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
 import type { Vehicle } from "../hooks/useVehicles";
 import ImageUploader from "../components/ImageUploader";
 import LeadsPanel from "../components/LeadsPanel";
 import { useLeads } from "../hooks/useLeads";
-import { prepararVeiculo } from "./adminVehicle";
 
 const vazio = {
   name: "", year: "", km: "", price: "", status: "",
@@ -102,14 +104,21 @@ function Painel() {
     setAGravar(true);
     setMsg("");
     try {
-      const dados = prepararVeiculo(form);
+      const dados: Record<string, unknown> = { ...form };
+      dados.images = form.images.split("\n").map((s) => s.trim()).filter(Boolean);
+      dados.features = form.features.split("\n").map((s) => s.trim()).filter(Boolean);
+
+      Object.keys(dados).forEach((k) => {
+        const v = dados[k];
+        if (v === "" || (Array.isArray(v) && v.length === 0)) delete dados[k];
+      });
 
       if (aEditar) {
-        await api.updateVehicle(aEditar, dados);
+        await updateDoc(doc(db, "vehicles", aEditar), dados);
         setMsg("Autocaravana atualizada.");
         // Não limpamos: continua a editar a mesma, no mesmo sítio
       } else {
-        await api.createVehicle(dados);
+        await addDoc(collection(db, "vehicles"), dados);
         setMsg("Autocaravana adicionada.");
         limpar();
       }
@@ -129,7 +138,7 @@ function Painel() {
       power: v.power ?? "", fuel: v.fuel ?? "", transmission: v.transmission ?? "",
       seats: v.seats ?? "", beds: v.beds ?? "", condition: v.condition ?? "",
       warranty: v.warranty ?? "", description: v.description ?? "",
-      images: (v.images ?? (v.image ? [v.image] : [])).join("\n"),
+      images: (v.images ?? []).join("\n"),
       features: (v.features ?? []).join("\n"),
     });
     setAEditar(v.id);
@@ -139,7 +148,7 @@ function Painel() {
   const apagar = async (v: Vehicle) => {
     if (!confirm(`Apagar "${v.name}"? Esta ação não pode ser desfeita.`)) return;
     try {
-      await api.deleteVehicle(v.id);
+      await deleteDoc(doc(db, "vehicles", v.id));
       setMsg("Autocaravana removida.");
       await carregar();
     } catch {
@@ -328,8 +337,7 @@ function Painel() {
 // ---------- Entrada ----------
 function AdminConteudo() {
   usePageTitle("Área interna");
-
-  const { utilizador, isAdmin, aCarregar, sair } = useAuth();
+  const { utilizador, aCarregar } = useAuth();
 
   if (aCarregar) {
     return (
@@ -339,34 +347,7 @@ function AdminConteudo() {
     );
   }
 
-  if (!utilizador) {
-    return <Login />;
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="bg-[#f4f4f2] min-h-screen flex items-center justify-center px-6">
-        <div className="text-center max-w-sm">
-          <h1 className="text-black text-xl font-medium mb-2">
-            Acesso negado
-          </h1>
-
-          <p className="text-black/60 text-sm mb-6">
-            Esta área está reservada ao administrador.
-          </p>
-
-          <button
-            onClick={sair}
-            className="text-black text-sm underline underline-offset-4"
-          >
-            Sair
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return <Painel />;
+  return utilizador ? <Painel /> : <Login />;
 }
 
 function AdminPage() {
@@ -376,6 +357,5 @@ function AdminPage() {
     </AuthProvider>
   );
 }
-  
 
 export default AdminPage;

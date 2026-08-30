@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
-import { api } from "../lib/functions";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 export type Lead = {
   id: string;
   nome?: string; contacto?: string; marca?: string;
   ano?: string; km?: string; preco?: string; notas?: string;
   tratado?: boolean;
-  criadoEm?: string | null;
+  criadoEm?: { seconds: number };
 };
 
 export function useLeads() {
@@ -17,7 +18,9 @@ export function useLeads() {
   const carregar = useCallback(async () => {
     setACarregar(true);
     try {
-      setLeads(await api.listLeads());
+      const q = query(collection(db, "leads"), orderBy("criadoEm", "desc"));
+      const snap = await getDocs(q);
+      setLeads(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Lead, "id">) })));
       setErro("");
     } catch (e) {
       console.error(e);

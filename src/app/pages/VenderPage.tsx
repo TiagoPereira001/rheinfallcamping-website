@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2, MessageCircle } from "lucide-react";
-import { api } from "../lib/functions";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../lib/firebase";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { whatsappLink } from "../data/config";
 
@@ -12,7 +13,6 @@ const campoVazio = {
   km: "",
   preco: "",
   notas: "",
-  website: "",
 };
 
 function VenderPage() {
@@ -43,7 +43,7 @@ function VenderPage() {
 
     setAEnviar(true);
     try {
-      await api.submitLead({
+      await addDoc(collection(db, "leads"), {
         nome: form.nome.trim(),
         contacto: form.contacto.trim(),
         marca: form.marca.trim(),
@@ -51,7 +51,8 @@ function VenderPage() {
         km: form.km.trim(),
         preco: form.preco.trim(),
         notas: form.notas.trim(),
-        website: form.website,
+        criadoEm: serverTimestamp(),
+        tratado: false,
       });
       setEnviado(true);
     } catch {
@@ -134,19 +135,6 @@ function VenderPage() {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-
-              <div className="absolute -left-[10000px]" aria-hidden="true">
-                <label htmlFor="website">Não preencher</label>
-                <input
-                  id="website"
-                  name="website"
-                  type="text"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  value={form.website}
-                  onChange={handleChange("website")}
-                />
-              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                 <div>
