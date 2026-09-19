@@ -28,7 +28,7 @@ function Footer() {
           </div>
 
           <div>
-            <span className="text-white/40 text-xs font-medium uppercase tracking-wider block mb-4">
+            <span className="text-white/60 text-xs font-medium uppercase tracking-wider block mb-4">
               Contacto
             </span>
             <ul className="space-y-2.5">

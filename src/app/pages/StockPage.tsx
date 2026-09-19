@@ -122,7 +122,7 @@ function StockPage() {
 
               <div className="space-y-6">
                 <div>
-                  <label htmlFor="filtro-preco" className="block text-xs font-semibold uppercase tracking-wider text-black/40 mb-3">
+                  <label htmlFor="filtro-preco" className="block text-xs font-semibold uppercase tracking-wider text-black/60 mb-3">
                     Preço
                   </label>
                   <select
@@ -139,7 +139,7 @@ function StockPage() {
 
                 {anosDisponiveis.length > 1 && (
                   <div>
-                    <label htmlFor="filtro-ano" className="block text-xs font-semibold uppercase tracking-wider text-black/40 mb-3">
+                    <label htmlFor="filtro-ano" className="block text-xs font-semibold uppercase tracking-wider text-black/60 mb-3">
                       Ano
                     </label>
                     <select
@@ -158,7 +158,7 @@ function StockPage() {
 
                 {marcasDisponiveis.length > 1 && (
                   <div>
-                    <span className="block text-xs font-semibold uppercase tracking-wider text-black/40 mb-3">
+                    <span className="block text-xs font-semibold uppercase tracking-wider text-black/60 mb-3">
                       Marca
                     </span>
                     <div className="space-y-2">
@@ -190,16 +190,16 @@ function StockPage() {
           </aside>
 
           <div className="flex-1">
-            {loading && <p className="text-black/50 text-sm">A carregar stock...</p>}
+            {loading && <p className="text-black/60 text-sm">A carregar stock...</p>}
             {error && <p className="text-red-700 text-sm">{error}</p>}
 
             {!loading && !error && vehicles.length === 0 && (
-              <p className="text-black/50 text-sm">Ainda não há autocaravanas em stock.</p>
+              <p className="text-black/60 text-sm">Ainda não há autocaravanas em stock.</p>
             )}
 
             {!loading && !error && vehicles.length > 0 && (
               <>
-                <p className="text-black/50 text-sm mb-6">
+                <p className="text-black/60 text-sm mb-6">
                   {filtrados.length === 1
                     ? "1 autocaravana encontrada"
                     : `${filtrados.length} autocaravanas encontradas`}

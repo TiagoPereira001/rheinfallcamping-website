@@ -92,7 +92,7 @@ function HomePage() {
             </Link>
           </div>
           {loading && (
-            <p className="text-black/50 text-sm">A carregar stock...</p>
+            <p className="text-black/60 text-sm">A carregar stock...</p>
           )}
           {error && <p className="text-red-700 text-sm">{error}</p>}
           {!loading && !error && (
@@ -124,7 +124,7 @@ function HomePage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-white/20 text-sm">
+                <div className="w-full h-full flex items-center justify-center text-white/60 text-sm">
                   Foto em breve
                 </div>
               )}

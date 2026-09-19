@@ -38,7 +38,7 @@ function ShareButtons({ titulo }: { titulo: string }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 mt-8 pt-6 border-t border-black/10">
-      <span className="text-black/50 text-sm mr-1">Partilhar:</span>
+      <span className="text-black/60 text-sm mr-1">Partilhar:</span>
 
       {temPartilhaNativa ? (
         <button onClick={partilharNativo} className={estiloBotao}>

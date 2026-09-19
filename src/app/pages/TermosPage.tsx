@@ -15,7 +15,7 @@ function TermosPage() {
         <h1 className="text-black text-3xl md:text-4xl font-medium mb-4">
           Termos e condições
         </h1>
-        <p className="text-black/50 text-sm mb-12">
+        <p className="text-black/60 text-sm mb-12">
           Última atualização: {new Date().toLocaleDateString("pt-PT", { month: "long", year: "numeric" })}
         </p>
 

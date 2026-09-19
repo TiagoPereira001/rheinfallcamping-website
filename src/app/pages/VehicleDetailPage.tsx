@@ -74,7 +74,7 @@ function VehicleDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center bg-[#f4f4f2]">
-        <p className="text-black/50 text-sm">A carregar...</p>
+        <p className="text-black/60 text-sm">A carregar...</p>
       </div>
     );
   }
@@ -148,8 +148,12 @@ function VehicleDetailPage() {
 
         <div className="mb-10">
           <span
-            className={`inline-block text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 ${
-              vendida ? "bg-[#b02020]" : brevemente ? "bg-[#C2A07A]" : "bg-[#2f7d4f]"
+            className={`inline-block text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full mb-4 ${
+              vendida
+                ? "bg-[#b02020] text-white"
+                : brevemente
+                ? "bg-[#C2A07A] text-black/80"
+                : "bg-[#2f7d4f] text-white"
             }`}
           >
             {vendida ? "Vendida" : brevemente ? "Brevemente em stock" : "Para venda"}
@@ -161,7 +165,7 @@ function VehicleDetailPage() {
             {vehicle.price && !vendida && (
               <p className="text-black text-3xl font-medium">{vehicle.price}</p>
             )}
-            <div className="flex items-center gap-3 text-black/50 text-sm">
+            <div className="flex items-center gap-3 text-black/60 text-sm">
               {vehicle.year && <span>{vehicle.year}</span>}
               {vehicle.year && vehicle.km && <span className="w-px h-3 bg-black/20" />}
               {vehicle.km && <span>{vehicle.km}</span>}
@@ -247,7 +251,7 @@ function VehicleDetailPage() {
                   <div className="grid grid-cols-2 divide-x divide-y divide-black/5">
                     {specs.map((spec) => (
                       <div key={spec.label} className="p-4 md:p-5">
-                        <span className="block text-xs uppercase tracking-wider text-black/40 mb-1">
+                        <span className="block text-xs uppercase tracking-wider text-black/60 mb-1">
                           {spec.label}
                         </span>
                         <span className="font-medium text-black text-[0.9375rem]">{spec.value}</span>
@@ -279,14 +283,14 @@ function VehicleDetailPage() {
 
           <div className="lg:col-span-1">
             <div
-              className={`rounded-3xl p-8 lg:sticky lg:top-24 shadow-lg text-white ${
-                vendida ? "bg-[#2a2a2a]" : "bg-[#C2A07A]"
+              className={`rounded-3xl p-8 lg:sticky lg:top-24 shadow-lg ${
+                vendida ? "bg-[#2a2a2a] text-white" : "bg-[#C2A07A] text-black"
               }`}
             >
               <h3 className="text-xl font-medium mb-2">
                 {vendida ? "Mais um cliente satisfeito" : "Tem interesse?"}
               </h3>
-              <p className="text-white/80 text-sm mb-8">
+              <p className={`text-sm mb-8 ${vendida ? "text-white/80" : "text-black/70"}`}>
                 {vendida
                   ? "Esta autocaravana já foi entregue ao novo dono. Procura algo parecido? Deixe o contacto e avisamos quando entrar algo semelhante."
                   : brevemente
@@ -300,17 +304,27 @@ function VehicleDetailPage() {
                   value={form.nome}
                   onChange={(e) => { setForm({ ...form, nome: e.target.value }); setErro(""); }}
                   placeholder="Nome"
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
+                  className={
+                    vendida
+                      ? "w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
+                      : "w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-sm text-black placeholder-black/45 outline-none focus:border-black/40 focus:bg-black/10 transition-all"
+                  }
                 />
                 <input
                   type="text"
                   value={form.contacto}
                   onChange={(e) => { setForm({ ...form, contacto: e.target.value }); setErro(""); }}
                   placeholder="Email ou Telefone"
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
+                  className={
+                    vendida
+                      ? "w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
+                      : "w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-sm text-black placeholder-black/45 outline-none focus:border-black/40 focus:bg-black/10 transition-all"
+                  }
                 />
 
-                {erro && <p className="text-white text-sm bg-black/25 rounded-lg px-3 py-2">{erro}</p>}
+                {erro && (
+                  <p className="text-red-700 text-sm bg-white/90 rounded-lg px-3 py-2">{erro}</p>
+                )}
 
                 <button
                   type="submit"
@@ -326,13 +340,13 @@ function VehicleDetailPage() {
                   <button
                     type="button"
                     onClick={(e) => enviar(e, "proposta")}
-                    className="w-full bg-transparent border border-white/30 text-white text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-white/5 transition-colors"
+                    className="w-full bg-transparent border border-black/30 text-black text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-black/5 transition-colors"
                   >
                     Fazer Proposta
                   </button>
                 )}
 
-                <p className="text-white/60 text-xs text-center pt-1">
+                <p className={`text-xs text-center pt-1 ${vendida ? "text-white/60" : "text-black/70"}`}>
                   Abre o WhatsApp com a sua mensagem já preenchida.
                 </p>
               </form>
