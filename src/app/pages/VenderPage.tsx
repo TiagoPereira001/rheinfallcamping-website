@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { CheckCircle2, MessageCircle } from "lucide-react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { httpsCallable, FunctionsError } from "firebase/functions";
+import { functions } from "../lib/firebase";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { whatsappLink } from "../data/config";
+
+const submitLead = httpsCallable(functions, "submitLead");
 
 const campoVazio = {
   nome: "",
@@ -43,7 +45,7 @@ function VenderPage() {
 
     setAEnviar(true);
     try {
-      await addDoc(collection(db, "leads"), {
+      await submitLead({
         nome: form.nome.trim(),
         contacto: form.contacto.trim(),
         marca: form.marca.trim(),
@@ -51,12 +53,14 @@ function VenderPage() {
         km: form.km.trim(),
         preco: form.preco.trim(),
         notas: form.notas.trim(),
-        criadoEm: serverTimestamp(),
-        tratado: false,
       });
       setEnviado(true);
-    } catch {
-      setErro("Não foi possível enviar. Tente novamente ou contacte-nos por telefone.");
+    } catch (err) {
+      if (err instanceof FunctionsError && err.code === "functions/resource-exhausted") {
+        setErro("Já recebemos vários pedidos seus. Tente novamente daqui a algum tempo.");
+      } else {
+        setErro("Não foi possível enviar. Tente novamente ou contacte-nos por telefone.");
+      }
     } finally {
       setAEnviar(false);
     }

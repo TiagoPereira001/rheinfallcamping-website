@@ -1,14 +1,16 @@
 import { useEffect, useState, useCallback } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../lib/firebase";
 
 export type Lead = {
   id: string;
-  nome?: string; contacto?: string; marca?: string;
-  ano?: string; km?: string; preco?: string; notas?: string;
-  tratado?: boolean;
-  criadoEm?: { seconds: number };
+  nome: string; contacto: string; marca: string;
+  ano: string; km: string; preco: string; notas: string;
+  tratado: boolean;
+  criadoEm: string | null; // ISO — vem já convertido pela Cloud Function
 };
+
+const listLeads = httpsCallable<void, Lead[]>(functions, "listLeads");
 
 export function useLeads() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -18,9 +20,8 @@ export function useLeads() {
   const carregar = useCallback(async () => {
     setACarregar(true);
     try {
-      const q = query(collection(db, "leads"), orderBy("criadoEm", "desc"));
-      const snap = await getDocs(q);
-      setLeads(snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<Lead, "id">) })));
+      const resultado = await listLeads();
+      setLeads(resultado.data);
       setErro("");
     } catch (e) {
       console.error(e);

@@ -1,11 +1,14 @@
-import { updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { Trash2, Check, Clock } from "lucide-react";
-import { db } from "../lib/firebase";
+import { functions } from "../lib/firebase";
 import type { Lead } from "../hooks/useLeads";
 
+const setLeadTratado = httpsCallable(functions, "setLeadTratado");
+const deleteLead = httpsCallable(functions, "deleteLead");
+
 function dataLegivel(l: Lead) {
-  if (!l.criadoEm?.seconds) return "";
-  return new Date(l.criadoEm.seconds * 1000).toLocaleDateString("pt-PT", {
+  if (!l.criadoEm) return "";
+  return new Date(l.criadoEm).toLocaleDateString("pt-PT", {
     day: "2-digit", month: "short", year: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
@@ -20,13 +23,13 @@ type Props = {
 
 function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
   const alternarTratado = async (l: Lead) => {
-    await updateDoc(doc(db, "leads", l.id), { tratado: !l.tratado });
+    await setLeadTratado({ id: l.id, tratado: !l.tratado });
     recarregar();
   };
 
   const apagar = async (l: Lead) => {
     if (!confirm(`Apagar o pedido de ${l.nome || "sem nome"}?`)) return;
-    await deleteDoc(doc(db, "leads", l.id));
+    await deleteLead({ id: l.id });
     recarregar();
   };
 
@@ -91,7 +94,7 @@ function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
               {l.notas && <p className="whitespace-pre-line pt-1">{l.notas}</p>}
             </div>
 
-            <span className="block text-black/35 text-xs mt-3">{dataLegivel(l)}</span>
+            <span className="block text-black/60 text-xs mt-3">{dataLegivel(l)}</span>
           </div>
         ))}
       </div>

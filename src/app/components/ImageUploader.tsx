@@ -1,11 +1,25 @@
 import { useState, useRef } from "react";
 import { Upload, X } from "lucide-react";
-import { CLOUDINARY_CLOUD_NAME, CLOUDINARY_PRESET } from "../data/config";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../lib/firebase";
 
 type Props = {
   urls: string[];
   onChange: (urls: string[]) => void;
 };
+
+type AssinaturaUpload = {
+  apiKey: string;
+  cloudName: string;
+  folder: string;
+  publicId: string;
+  signature: string;
+  tags: string;
+  timestamp: number;
+  uploadPreset: string;
+};
+
+const pedirAssinatura = httpsCallable<void, AssinaturaUpload>(functions, "createVehicleUpload");
 
 function ImageUploader({ urls, onChange }: Props) {
   const [aEnviar, setAEnviar] = useState(false);
@@ -14,12 +28,24 @@ function ImageUploader({ urls, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const enviarUma = async (ficheiro: File): Promise<string> => {
+    // A assinatura vem da Cloud Function (só para admins) — a api_secret
+    // da Cloudinary nunca chega ao browser
+    const { data: assinatura } = await pedirAssinatura();
+
     const dados = new FormData();
     dados.append("file", ficheiro);
-    dados.append("upload_preset", CLOUDINARY_PRESET);
+    dados.append("api_key", assinatura.apiKey);
+    dados.append("timestamp", String(assinatura.timestamp));
+    dados.append("signature", assinatura.signature);
+    dados.append("folder", assinatura.folder);
+    dados.append("public_id", assinatura.publicId);
+    dados.append("tags", assinatura.tags);
+    dados.append("upload_preset", assinatura.uploadPreset);
+    dados.append("use_filename", "false");
+    dados.append("unique_filename", "false");
 
     const resposta = await fetch(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      `https://api.cloudinary.com/v1_1/${assinatura.cloudName}/image/upload`,
       { method: "POST", body: dados }
     );
 
