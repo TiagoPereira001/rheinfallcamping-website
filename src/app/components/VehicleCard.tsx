@@ -6,7 +6,13 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
   const mainImage = v.images?.[0] || v.image;
 
   const etiqueta = vendida ? "Vendida" : brevemente ? "Brevemente" : "Para venda";
-  const corEtiqueta = vendida ? "bg-[#b02020]" : brevemente ? "bg-[#C2A07A]" : "bg-[#2f7d4f]";
+  // Texto branco não tem contraste suficiente sobre o dourado (#C2A07A) —
+  // só essa etiqueta usa texto escuro, as outras (verde/vermelho) já passam
+  const corEtiqueta = vendida
+    ? "bg-[#b02020] text-white"
+    : brevemente
+    ? "bg-[#C2A07A] text-black/80"
+    : "bg-[#2f7d4f] text-white";
 
   return (
     <article
@@ -25,7 +31,7 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent pointer-events-none" />
         <span
-          className={`absolute top-4 left-4 text-white text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full ${corEtiqueta}`}
+          className={`absolute top-4 left-4 text-[0.6875rem] font-medium uppercase tracking-wider px-3 py-1.5 rounded-full ${corEtiqueta}`}
         >
           {etiqueta}
         </span>

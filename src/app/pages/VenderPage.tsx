@@ -164,21 +164,21 @@ function VenderPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
                 <div>
                   <label htmlFor="ano" className="block text-black text-sm font-medium mb-2">
-                    Ano <span className="text-black/40 font-normal">(opcional)</span>
+                    Ano <span className="text-black/60 font-normal">(opcional)</span>
                   </label>
                   <input id="ano" name="ano" type="text" value={form.ano}
                     onChange={handleChange("ano")} placeholder="2005" className={inputClass} />
                 </div>
                 <div>
                   <label htmlFor="km" className="block text-black text-sm font-medium mb-2">
-                    Km <span className="text-black/40 font-normal">(opcional)</span>
+                    Km <span className="text-black/60 font-normal">(opcional)</span>
                   </label>
                   <input id="km" name="km" type="text" value={form.km}
                     onChange={handleChange("km")} placeholder="78.000" className={inputClass} />
                 </div>
                 <div>
                   <label htmlFor="preco" className="block text-black text-sm font-medium mb-2">
-                    Preço <span className="text-black/40 font-normal">(opcional)</span>
+                    Preço <span className="text-black/60 font-normal">(opcional)</span>
                   </label>
                   <input id="preco" name="preco" type="text" value={form.preco}
                     onChange={handleChange("preco")} placeholder="€ 25.000" className={inputClass} />
@@ -187,7 +187,7 @@ function VenderPage() {
 
               <div>
                 <label htmlFor="notas" className="block text-black text-sm font-medium mb-2">
-                  Estado e observações <span className="text-black/40 font-normal">(opcional)</span>
+                  Estado e observações <span className="text-black/60 font-normal">(opcional)</span>
                 </label>
                 <textarea id="notas" name="notas" value={form.notas} onChange={handleChange("notas")}
                   rows={4} placeholder="Estado geral, o que já foi feito, o que precisa de arranjo..."
@@ -204,7 +204,7 @@ function VenderPage() {
                 {aEnviar ? "A enviar..." : "Enviar dados"}
               </button>
 
-              <p className="text-black/45 text-xs pt-1">
+              <p className="text-black/60 text-xs pt-1">
                 Só usamos estes dados para lhe responder. Não são partilhados com ninguém.
               </p>
             </form>

@@ -120,7 +120,7 @@ function ImageUploader({ urls, onChange }: Props) {
                   onClick={() => mover(i, -1)}
                   disabled={i === 0}
                   aria-label="Mover para trás"
-                  className="text-black/40 hover:text-black text-xs px-1.5 disabled:opacity-25"
+                  className="text-black/60 hover:text-black text-xs px-1.5 disabled:opacity-25"
                 >
                   ←
                 </button>
@@ -129,7 +129,7 @@ function ImageUploader({ urls, onChange }: Props) {
                   onClick={() => mover(i, 1)}
                   disabled={i === urls.length - 1}
                   aria-label="Mover para a frente"
-                  className="text-black/40 hover:text-black text-xs px-1.5 disabled:opacity-25"
+                  className="text-black/60 hover:text-black text-xs px-1.5 disabled:opacity-25"
                 >
                   →
                 </button>
@@ -139,7 +139,7 @@ function ImageUploader({ urls, onChange }: Props) {
         </div>
       )}
 
-      <p className="text-black/40 text-xs mt-3">
+      <p className="text-black/60 text-xs mt-3">
         A primeira foto é a que aparece no stock. Use as setas para reordenar.
       </p>
     </div>

@@ -32,16 +32,16 @@ function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
 
   const porTratar = leads.filter((l) => !l.tratado).length;
 
-  if (aCarregar) return <p className="text-black/50 text-sm">A carregar pedidos...</p>;
+  if (aCarregar) return <p className="text-black/60 text-sm">A carregar pedidos...</p>;
   if (erro) return <p className="text-red-700 text-sm">{erro}</p>;
 
   if (leads.length === 0) {
-    return <p className="text-black/50 text-sm">Ainda não há pedidos de venda.</p>;
+    return <p className="text-black/60 text-sm">Ainda não há pedidos de venda.</p>;
   }
 
   return (
     <div>
-      <p className="text-black/50 text-sm mb-4">
+      <p className="text-black/60 text-sm mb-4">
         {leads.length} {leads.length === 1 ? "pedido" : "pedidos"}
         {porTratar > 0 && ` · ${porTratar} por tratar`}
       </p>
@@ -67,7 +67,7 @@ function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
                   aria-label={l.tratado ? "Marcar por tratar" : "Marcar como tratado"}
                   className={`p-2 border rounded-lg transition-colors ${
                     l.tratado
-                      ? "border-black/15 text-black/40 hover:bg-black/5"
+                      ? "border-black/15 text-black/60 hover:bg-black/5"
                       : "border-[#2f7d4f]/30 text-[#2f7d4f] hover:bg-[#2f7d4f]/5"
                   }`}
                 >

@@ -184,7 +184,7 @@ function Painel() {
         <div className="flex items-center justify-between mb-10">
           <div>
             <h1 className="text-black text-2xl font-medium">Gerir stock</h1>
-            <p className="text-black/50 text-sm mt-1">{utilizador?.email}</p>
+            <p className="text-black/60 text-sm mt-1">{utilizador?.email}</p>
           </div>
           <button onClick={sair}
             className="inline-flex items-center gap-2 border border-black/15 text-black text-sm px-4 py-2 rounded-lg hover:bg-black/5 transition-colors">
@@ -195,13 +195,13 @@ function Painel() {
         <div className="flex gap-2 mb-8 border-b border-black/10">
           <button onClick={() => setAba("stock")}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              aba === "stock" ? "border-black text-black" : "border-transparent text-black/50 hover:text-black"
+              aba === "stock" ? "border-black text-black" : "border-transparent text-black/60 hover:text-black"
             }`}>
             Stock
           </button>
           <button onClick={() => setAba("pedidos")}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors inline-flex items-center gap-2 ${
-              aba === "pedidos" ? "border-black text-black" : "border-transparent text-black/50 hover:text-black"
+              aba === "pedidos" ? "border-black text-black" : "border-transparent text-black/60 hover:text-black"
             }`}>
             Pedidos de venda
             {leads.porTratar > 0 && (
@@ -227,7 +227,7 @@ function Painel() {
         {msg && (
           <div className="bg-white border border-black/10 rounded-xl px-4 py-3 mb-6 text-sm flex items-center justify-between">
             <span>{msg}</span>
-            <button onClick={() => setMsg("")} className="text-black/40 hover:text-black">
+            <button onClick={() => setMsg("")} className="text-black/60 hover:text-black">
               <X size={15} />
             </button>
           </div>
@@ -301,7 +301,7 @@ function Painel() {
         </h2>
 
         {aCarregar ? (
-          <p className="text-black/50 text-sm">A carregar...</p>
+          <p className="text-black/60 text-sm">A carregar...</p>
         ) : (
           <div className="space-y-2">
             {lista.map((v) => (
@@ -309,7 +309,7 @@ function Painel() {
                 className="bg-white rounded-xl border border-black/5 px-5 py-4 flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <span className="block text-black font-medium truncate">{v.name}</span>
-                  <span className="block text-black/50 text-sm">
+                  <span className="block text-black/60 text-sm">
                     {[v.year, v.km, v.price].filter(Boolean).join(" · ")}
                     {v.status === "vendida" && " · Vendida"}
                     {v.status === "brevemente" && " · Brevemente"}
@@ -344,7 +344,7 @@ function AdminConteudo() {
   if (aCarregar) {
     return (
       <div className="bg-[#f4f4f2] min-h-screen flex items-center justify-center">
-        <p className="text-black/50 text-sm">A verificar sessão...</p>
+        <p className="text-black/60 text-sm">A verificar sessão...</p>
       </div>
     );
   }

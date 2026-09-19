@@ -57,8 +57,8 @@ function ContactosPage() {
             href={`tel:+${WHATSAPP_NUMBER}`}
             className="bg-white rounded-2xl border border-black/5 p-6 hover:border-black/20 transition-colors group"
           >
-            <Phone size={18} className="text-black/40 mb-3" />
-            <span className="block text-xs uppercase tracking-wider text-black/40 mb-1.5">
+            <Phone size={18} className="text-black/60 mb-3" />
+            <span className="block text-xs uppercase tracking-wider text-black/60 mb-1.5">
               Telefone
             </span>
             <span className="block text-black font-medium group-hover:underline underline-offset-4">
@@ -67,16 +67,16 @@ function ContactosPage() {
           </a>
 
           <div className="bg-white rounded-2xl border border-black/5 p-6">
-            <MapPin size={18} className="text-black/40 mb-3" />
-            <span className="block text-xs uppercase tracking-wider text-black/40 mb-1.5">
+            <MapPin size={18} className="text-black/60 mb-3" />
+            <span className="block text-xs uppercase tracking-wider text-black/60 mb-1.5">
               Onde estamos
             </span>
             <span className="block text-black font-medium">{LOCATION}</span>
           </div>
 
           <div className="bg-white rounded-2xl border border-black/5 p-6">
-            <Clock size={18} className="text-black/40 mb-3" />
-            <span className="block text-xs uppercase tracking-wider text-black/40 mb-1.5">
+            <Clock size={18} className="text-black/60 mb-3" />
+            <span className="block text-xs uppercase tracking-wider text-black/60 mb-1.5">
               Visitas
             </span>
             <span className="block text-black font-medium">Por marcação</span>
@@ -124,7 +124,7 @@ function ContactosPage() {
 
               <div>
                 <label htmlFor="veiculo" className="block text-black text-sm font-medium mb-2">
-                  Qual a autocaravana que lhe interessa? <span className="text-black/40 font-normal">(opcional)</span>
+                  Qual a autocaravana que lhe interessa? <span className="text-black/60 font-normal">(opcional)</span>
                 </label>
                 <input
                   id="veiculo"
@@ -156,7 +156,7 @@ function ContactosPage() {
                 </a>
               </div>
 
-              <p className="text-black/45 text-xs pt-1">
+              <p className="text-black/60 text-xs pt-1">
                 Ao enviar, abre o WhatsApp com a mensagem já escrita.
               </p>
             </form>
