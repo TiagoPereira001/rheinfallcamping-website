@@ -47,13 +47,28 @@ GOOGLE_APPLICATION_CREDENTIALS=/caminho/para/chave.json \
 Repete sempre que precisares de dar acesso a outro email. Depois de correr, esse
 utilizador tem de voltar a fazer login no `/admin` para o token atualizar.
 
-### 4. Deploy
+### 4. Deploy — functions E regras do Firestore
 
 ```bash
 firebase deploy --only functions
+firebase deploy --only firestore:rules
 ```
 
-O site (`npm run build` + Cloudflare Pages) não inclui isto — é sempre manual.
+**As duas são necessárias, não só a primeira.** As regras que estão ativas no
+projeto agora (confirmadas em 2026-09-20) ainda são o modelo antigo — permitem
+`create` em `leads` sem autenticação nenhuma, só com validação de campos. Isso
+significa que, mesmo depois de publicares as functions, alguém consegue continuar
+a escrever direto na coleção `leads` pela API do Firestore, **sem passar pelo
+rate limiting** de `submitLead` (3 pedidos/hora por IP) — o limite fica
+decorativo enquanto essa regra antiga continuar ativa.
+
+O `firestore.rules` deste repositório já está no estado certo para o modelo
+atual (só leitura pública de `vehicles`, tudo o resto fechado — as escritas
+passam a ir só pela Admin SDK dentro das Cloud Functions, que não é afetada
+pelas regras). Basta publicá-lo.
+
+O site (`npm run build` + Cloudflare Pages) não inclui nenhum destes dois
+deploys — são sempre manuais.
 
 ## CORS
 
@@ -68,3 +83,8 @@ pré-visualização da Cloudflare Pages (domínios `*.pages.dev`), adiciona-os a
 - `/admin` → login → adicionar/editar/apagar uma autocaravana
 - `/admin` → aba "Pedidos de venda" → marcar como tratado, apagar
 - Upload de fotos no formulário de veículo
+- Confirmar que a escrita direta ao Firestore ficou mesmo fechada: no
+  browser, com a consola do site aberta, tentar
+  `firebase.firestore().collection("leads").add({...})` (ou equivalente)
+  deve dar `permission-denied` — se não der, as regras antigas ainda
+  estão ativas
