@@ -50,6 +50,8 @@ function HomePage() {
               sizes="100vw"
               alt=""
               aria-hidden="true"
+              // @ts-expect-error — minúsculas de propósito: React 18 não reconhece
+              // "fetchPriority" (camelCase) e o atributo real do DOM é lowercase
               fetchpriority="high"
               className="absolute inset-0 w-full h-full object-cover"
             />
