@@ -27,8 +27,9 @@ Site de compra e venda de autocaravanas usadas, na zona da Covilhã.
 | Rotas | React Router 7 |
 | Base de dados | Firebase Firestore |
 | Autenticação | Firebase Auth |
-| Fotos | Cloudinary (upload direto do browser) |
-| Alojamento | Netlify |
+| Fotos | Cloudinary (upload assinado via Cloud Function) |
+| Alojamento | Cloudflare Pages |
+| Backend | Cloud Functions (Firebase, região `europe-west1`) |
 | Ícones | Lucide React |
 
 ---
@@ -111,20 +112,21 @@ Só o `name` é obrigatório. Tudo o resto é opcional: o que não estiver preen
 
 ## Publicar
 
-O deploy é automático: cada `git push` para `main` desencadeia uma nova publicação na Netlify.
+O deploy do site é automático: cada `git push` para `main` desencadeia uma nova publicação na Cloudflare Pages.
 
 Antes de fazer push, convém correr `npm run build` localmente para apanhar erros primeiro.
 
-**Nota:** o plano gratuito da Netlify tem um limite de créditos que dá cerca de 20 publicações por mês. Vale a pena agrupar alterações em vez de publicar a cada correção.
+As Cloud Functions (`functions/`) **não** publicam sozinhas — exigem `firebase deploy --only functions` manual. Ver `functions/README.md` (ou a secção de Segurança abaixo) para o que precisa de estar configurado antes do primeiro deploy.
 
 ---
 
 ## Segurança
 
-- As contas de acesso ao `/admin` são criadas manualmente na consola do Firebase. **Não existe registo público.**
-- As regras do Firestore permitem leitura a todos e escrita apenas a utilizadores autenticados — é isto que protege os dados, não o facto de a página estar escondida.
-- O `.env.local` está no `.gitignore` e nunca deve ser enviado para o repositório.
-- O upload de fotos usa um preset "unsigned" da Cloudinary, limitado por formato, tamanho e pasta.
+- As contas de acesso ao `/admin` são criadas manualmente na consola do Firebase, com o custom claim `admin: true`. **Não existe registo público.**
+- Todas as escritas (veículos, pedidos de venda, upload de fotos) passam por **Cloud Functions** (`functions/src/index.ts`), não por escrita direta do browser ao Firestore. Cada função re-verifica o claim de admin, valida os campos recebidos e aplica rate limiting (pedidos de venda: 3/hora por IP).
+- O Firestore está fechado a escrita direta — só leitura pública de `vehicles`. Ver `firestore.rules`.
+- O upload de fotos usa assinatura gerada pela Cloud Function `createVehicleUpload` (preset "signed" da Cloudinary) — a `api_secret` nunca chega ao browser.
+- O `.env.local` está no `.gitignore` e nunca deve ser enviado para o repositório. As secrets das Cloud Functions (`RATE_LIMIT_SALT`, `CLOUDINARY_CONFIG`) vivem no Secret Manager do Firebase, não no código.
 
 ### Regras do Firestore
 
@@ -133,9 +135,12 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /vehicles/{doc} {
-      allow read: if true;
-      allow write: if request.auth != null;
+    match /vehicles/{vehicleId} {
+      allow get, list: if true;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
