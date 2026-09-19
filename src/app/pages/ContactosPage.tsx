@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { Phone, MapPin, Clock, MessageCircle } from "lucide-react";
-import { whatsappLink, LOCATION, WHATSAPP_NUMBER } from "../data/config";
+import { whatsappLink, LOCATION, WHATSAPP_NUMBER, phoneDisplay } from "../data/config";
 import { usePageTitle } from "../hooks/usePageTitle";
-
-const phoneDisplay = WHATSAPP_NUMBER.replace("351", "").replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
 
 function ContactosPage() {
   usePageTitle(

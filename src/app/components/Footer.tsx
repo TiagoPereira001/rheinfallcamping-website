@@ -1,7 +1,5 @@
 import { Link } from "react-router";
-import { WHATSAPP_NUMBER, LOCATION } from "../data/config";
-
-const phoneDisplay = WHATSAPP_NUMBER.replace("351", "").replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
+import { WHATSAPP_NUMBER, LOCATION, phoneDisplay } from "../data/config";
 
 function Footer() {
   return (

@@ -2,9 +2,7 @@ import { useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { NavLink } from "react-router";
 import { navLinks } from "../data/vehicles";
-import { WHATSAPP_NUMBER } from "../data/config";
-
-const phoneDisplay = WHATSAPP_NUMBER.replace("351", "").replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
+import { WHATSAPP_NUMBER, phoneDisplay } from "../data/config";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);

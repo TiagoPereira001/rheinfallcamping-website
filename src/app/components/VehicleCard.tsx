@@ -59,4 +59,4 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
   );
 }
 
-export default VehicleCard;1
+export default VehicleCard;

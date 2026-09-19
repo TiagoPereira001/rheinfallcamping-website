@@ -41,7 +41,8 @@ function ImageUploader({ urls, onChange }: Props) {
       try {
         const url = await enviarUma(f);
         novos.push(url);
-      } catch {
+      } catch (err) {
+        console.error("Erro ao enviar foto para o Cloudinary:", err);
         setErro(`Não foi possível enviar "${f.name}".`);
       }
       setProgresso((p) => ({ ...p, feitas: p.feitas + 1 }));

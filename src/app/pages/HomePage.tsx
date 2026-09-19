@@ -46,7 +46,7 @@ function HomePage() {
               sizes="100vw"
               alt=""
               aria-hidden="true"
-              fetchPriority="high"
+              fetchpriority="high"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/30" />

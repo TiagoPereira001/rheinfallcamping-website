@@ -1,9 +1,7 @@
 import { Link } from "react-router";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useConsentimento } from "../hooks/useConsentimento";
-import { WHATSAPP_NUMBER, LOCATION } from "../data/config";
-
-const phoneDisplay = WHATSAPP_NUMBER.replace("351", "").replace(/(\d{3})(\d{3})(\d{3})/, "$1 $2 $3");
+import { LOCATION, phoneDisplay } from "../data/config";
 
 function PrivacidadePage() {
   usePageTitle(
