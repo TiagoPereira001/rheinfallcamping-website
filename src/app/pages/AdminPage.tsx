@@ -1,20 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { LogOut, Plus, Pencil, Trash2, X } from "lucide-react";
-import { db } from "../lib/firebase";
+import { db, functions } from "../lib/firebase";
 import { useAuth, AuthProvider } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { invalidateVehiclesCache, type Vehicle } from "../hooks/useVehicles";
 import ImageUploader from "../components/ImageUploader";
 import LeadsPanel from "../components/LeadsPanel";
 import { useLeads } from "../hooks/useLeads";
+
+const createVehicle = httpsCallable(functions, "createVehicle");
+const updateVehicle = httpsCallable(functions, "updateVehicle");
+const deleteVehicle = httpsCallable(functions, "deleteVehicle");
 
 const vazio = {
   name: "", year: "", km: "", price: "", status: "",
@@ -114,11 +112,11 @@ function Painel() {
       });
 
       if (aEditar) {
-        await updateDoc(doc(db, "vehicles", aEditar), dados);
+        await updateVehicle({ id: aEditar, dados });
         setMsg("Autocaravana atualizada.");
         // Não limpamos: continua a editar a mesma, no mesmo sítio
       } else {
-        await addDoc(collection(db, "vehicles"), dados);
+        await createVehicle(dados);
         setMsg("Autocaravana adicionada.");
         limpar();
       }
@@ -149,7 +147,7 @@ function Painel() {
   const apagar = async (v: Vehicle) => {
     if (!confirm(`Apagar "${v.name}"? Esta ação não pode ser desfeita.`)) return;
     try {
-      await deleteDoc(doc(db, "vehicles", v.id));
+      await deleteVehicle({ id: v.id });
       setMsg("Autocaravana removida.");
       invalidateVehiclesCache();
       await carregar();
