@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { ChevronLeft, ChevronRight, Check, ImageIcon } from "lucide-react";
 import { useVehicle } from "../hooks/useVehicles";
@@ -23,9 +23,12 @@ function VehicleDetailPage() {
       : undefined
   );
 
-    // Dados estruturados para o Google mostrar preço e ano nos resultados
-  useStructuredData(
-    vehicle
+  // Dados estruturados para o Google mostrar preço e ano nos resultados.
+  // Memoizado por "vehicle" para não recriar o objeto (e reinjetar o
+  // <script>) sempre que o utilizador muda de foto na galeria.
+  const dadosEstruturados = useMemo(
+    () =>
+      vehicle
       ? {
           "@context": "https://schema.org",
           "@type": "Car",
@@ -63,8 +66,10 @@ function VehicleDetailPage() {
             },
           },
         }
-      : null
+      : null,
+    [vehicle]
   );
+  useStructuredData(dadosEstruturados);
 
   if (loading) {
     return (
