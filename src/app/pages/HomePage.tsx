@@ -13,27 +13,31 @@ import { WHATSAPP_NUMBER, LOCATION } from "../data/config";
 const HERO_IMAGE: string | null = "/images/foto_padrao.webp";
 const SOBRE_NOS_IMAGE: string | null = null;
 
+// Diz ao Google que isto é um stand de automóveis real, na Covilhã.
+// Fica fora do componente porque é sempre o mesmo objeto — não há
+// razão para o recriar (e voltar a injetar o <script>) a cada render.
+const DADOS_ESTRUTURADOS = {
+  "@context": "https://schema.org",
+  "@type": "AutoDealer",
+  name: "RheinfallCamping",
+  description:
+    "Compra e venda de autocaravanas usadas na zona da Covilhã. Mais de 10 anos a preparar cada veículo antes de vender.",
+  url: "https://rheinfallcamping.pt",
+  telephone: `+${WHATSAPP_NUMBER}`,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: LOCATION,
+    addressCountry: "PT",
+  },
+  areaServed: "Portugal",
+};
+
 function HomePage() {
   usePageTitle();
   const navigate = useNavigate();
   const { vehicles, loading, error } = useVehicles();
 
-    // Diz ao Google que isto é um stand de automóveis real, na Covilhã
-  useStructuredData({
-    "@context": "https://schema.org",
-    "@type": "AutoDealer",
-    name: "RheinfallCamping",
-    description:
-      "Compra e venda de autocaravanas usadas na zona da Covilhã. Mais de 10 anos a preparar cada veículo antes de vender.",
-    url: "https://rheinfallcamping.pt",
-    telephone: `+${WHATSAPP_NUMBER}`,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: LOCATION,
-      addressCountry: "PT",
-    },
-    areaServed: "Portugal",
-  });
+  useStructuredData(DADOS_ESTRUTURADOS);
 
   return (
     <>
