@@ -11,7 +11,7 @@ import { LogOut, Plus, Pencil, Trash2, X } from "lucide-react";
 import { db } from "../lib/firebase";
 import { useAuth, AuthProvider } from "../hooks/useAuth";
 import { usePageTitle } from "../hooks/usePageTitle";
-import type { Vehicle } from "../hooks/useVehicles";
+import { invalidateVehiclesCache, type Vehicle } from "../hooks/useVehicles";
 import ImageUploader from "../components/ImageUploader";
 import LeadsPanel from "../components/LeadsPanel";
 import { useLeads } from "../hooks/useLeads";
@@ -122,6 +122,7 @@ function Painel() {
         setMsg("Autocaravana adicionada.");
         limpar();
       }
+      invalidateVehiclesCache();
       await carregar();
     } catch (err) {
       console.error(err);
@@ -150,6 +151,7 @@ function Painel() {
     try {
       await deleteDoc(doc(db, "vehicles", v.id));
       setMsg("Autocaravana removida.");
+      invalidateVehiclesCache();
       await carregar();
     } catch {
       setMsg("Não foi possível remover.");

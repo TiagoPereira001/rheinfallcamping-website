@@ -74,6 +74,14 @@ async function carregarVeiculos(): Promise<Vehicle[]> {
   return pedidoEmCurso;
 }
 
+// Chamar depois de qualquer escrita (admin a adicionar/editar/apagar),
+// para que a próxima leitura pública não devolva dados desatualizados
+// durante os 5 minutos de cache.
+export function invalidateVehiclesCache() {
+  cache = null;
+  cacheEm = 0;
+}
+
 export function useVehicles() {
   const [vehicles, setVehicles] = useState<Vehicle[]>(cache ?? []);
   const [loading, setLoading] = useState(!cache);
