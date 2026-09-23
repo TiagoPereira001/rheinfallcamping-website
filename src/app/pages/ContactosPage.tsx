@@ -149,7 +149,7 @@ function ContactosPage() {
                   href={whatsappLink("Olá, tenho interesse nas vossas autocaravanas.")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#25D366] text-white text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-[#20bd5a] transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-[#25D366] text-black text-[0.9375rem] font-medium py-3.5 rounded-xl hover:bg-[#20bd5a] transition-colors"
                 >
                   <MessageCircle size={17} />
                   WhatsApp

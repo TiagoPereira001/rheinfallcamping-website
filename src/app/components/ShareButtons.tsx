@@ -48,7 +48,7 @@ function ShareButtons({ titulo }: { titulo: string }) {
       ) : (
         <button
           onClick={abrirWhatsApp}
-          className="inline-flex items-center gap-2 bg-[#25D366] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#20bd5a] transition-colors"
+          className="inline-flex items-center gap-2 bg-[#25D366] text-black text-sm px-4 py-2 rounded-lg hover:bg-[#20bd5a] transition-colors"
         >
           <MessageCircle size={15} />
           WhatsApp
