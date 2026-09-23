@@ -10,12 +10,15 @@ import NotFoundPage from "./pages/NotFoundPage";
 import PrivacidadePage from "./pages/PrivacidadePage";
 import CookieBanner from "./components/CookieBanner";
 import TermosPage from "./pages/TermosPage";
+import { useScrollToTop } from "./hooks/useScrollToTop";
 
 // Carregados só quando alguém visita estas páginas
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const VenderPage = lazy(() => import("./pages/VenderPage"));
 
 export default function App() {
+  useScrollToTop();
+
   return (
     <div className="min-h-screen bg-white font-sans antialiased flex flex-col">
       <Header />

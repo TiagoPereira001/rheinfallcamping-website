@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-23T00:00:00Z",
+  "title": "Design System: RheinfallCamping",
+  "extensions": {
+    "colorMeta": {
+      "ink": { "role": "primary", "displayName": "Tinta", "canonical": "#000000", "tonalRamp": ["#000000", "#000000", "#000000", "#000000", "#000000", "#404040", "#808080", "#BFBFBF"] },
+      "ink-lifted": { "role": "neutral", "displayName": "Tinta Elevada", "canonical": "#1a1a1a", "tonalRamp": ["#040404", "#090909", "#0E0E0E", "#141414", "#1A1A1A", "#535353", "#8C8C8C", "#C6C6C6"] },
+      "ink-photo": { "role": "neutral", "displayName": "Tinta de Foto", "canonical": "#1c1c1c", "tonalRamp": ["#040404", "#0A0A0A", "#0F0F0F", "#151515", "#1C1C1C", "#555555", "#8E8E8E", "#C6C6C6"] },
+      "ink-muted": { "role": "neutral", "displayName": "Tinta Baixa", "canonical": "#2a2a2a", "tonalRamp": ["#060606", "#0F0F0F", "#171717", "#202020", "#2A2A2A", "#5F5F5F", "#949494", "#CACACA"] },
+      "paper": { "role": "neutral", "displayName": "Papel", "canonical": "#ffffff", "tonalRamp": ["#262626", "#595959", "#8C8C8C", "#BFBFBF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"] },
+      "paper-warm": { "role": "neutral", "displayName": "Papel Quente", "canonical": "#f4f4f2", "tonalRamp": ["#252524", "#555555", "#868685", "#B7B7B6", "#F4F4F2", "#F7F7F5", "#FAFAF8", "#FCFCFC"] },
+      "gallery-void": { "role": "neutral", "displayName": "Vazio de Galeria", "canonical": "#e6e6e3", "tonalRamp": ["#222222", "#50504F", "#7E7E7D", "#ACACAA", "#E6E6E3", "#ECECEA", "#F2F2F1", "#F9F9F8"] },
+      "dourado-poeirento": { "role": "secondary", "displayName": "Dourado Poeirento", "canonical": "#C2A07A", "tonalRamp": ["#1D1812", "#44382B", "#6B5843", "#92785C", "#C2A07A", "#D1B89B", "#E0D0BC", "#F0E7DE"] },
+      "verde-floresta": { "role": "tertiary", "displayName": "Verde Floresta", "canonical": "#2f7d4f", "tonalRamp": ["#07130C", "#102C1C", "#1A452B", "#235E3B", "#2F7D4F", "#639E7B", "#97BEA7", "#CBDED3"] },
+      "vermelho-ferrugem": { "role": "tertiary", "displayName": "Vermelho Ferrugem", "canonical": "#b02020", "tonalRamp": ["#1A0505", "#3E0B0B", "#611212", "#841818", "#B02020", "#C45858", "#D89090", "#EBC7C7"] },
+      "whatsapp-verde": { "role": "tertiary", "displayName": "Verde WhatsApp", "canonical": "#25D366", "tonalRamp": ["#06200F", "#0D4A24", "#147438", "#1C9E4C", "#25D366", "#5CDE8C", "#92E9B2", "#C8F4D9"] },
+      "whatsapp-verde-hover": { "role": "tertiary", "displayName": "Verde WhatsApp (hover)", "canonical": "#20bd5a", "tonalRamp": ["#051C0E", "#0B4220", "#126832", "#188E44", "#20BD5A", "#58CE83", "#90DEAC", "#C7EED6"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Acento serif raro — um título ou nome de produto por página, no máximo." },
+      "body": { "displayName": "Corpo", "purpose": "Texto corrido, formulários, navegação — a base de trabalho neutra." },
+      "label": { "displayName": "Etiqueta", "purpose": "Estados do stock e cabeçalhos de campo em maiúsculas." }
+    },
+    "shadows": [
+      { "name": "flutuante", "value": "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)", "purpose": "Uso estrutural — menu móvel aberto e o cartão de contacto principal. Só duas ocorrências no sistema hoje." },
+      { "name": "convite-suave (provisória)", "value": "0 2px 12px rgba(0,0,0,0.08)", "purpose": "Direção confirmada para cartões/CTAs futuros — ainda não implementada, ver Elevation & Depth em DESIGN.md." }
+    ],
+    "motion": [
+      { "name": "zoom-foto", "value": "transform 500ms", "purpose": "Único movimento tátil do sistema hoje: a foto do cartão de veículo escala 1.04x no hover." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão Primário",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "CTA principal — agendar visita, marcar visita, enviar dados.",
+      "html": "<button class=\"ds-btn-primary\">Agendar Visita</button>",
+      "css": ".ds-btn-primary { background: #000000; color: #ffffff; padding: 14px 24px; border-radius: 12px; font-weight: 500; font-size: 0.9375rem; font-family: Inter, ui-sans-serif, sans-serif; border: none; cursor: pointer; transition: background 0.2s; } .ds-btn-primary:hover { background: rgba(0,0,0,0.85); } .ds-btn-primary:focus-visible { outline: 2px solid #000000; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão WhatsApp",
+      "kind": "button",
+      "refersTo": "button-whatsapp",
+      "description": "Abre o WhatsApp com mensagem pré-escrita — cor exclusiva ao WhatsApp, nunca reutilizada noutro contexto.",
+      "html": "<button class=\"ds-btn-whatsapp\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z\"/></svg>WhatsApp</button>",
+      "css": ".ds-btn-whatsapp { display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: #ffffff; padding: 14px 24px; border-radius: 12px; font-weight: 500; font-size: 0.9375rem; font-family: Inter, ui-sans-serif, sans-serif; border: none; cursor: pointer; transition: background 0.2s; } .ds-btn-whatsapp:hover { background: #20bd5a; } .ds-btn-whatsapp:focus-visible { outline: 2px solid #25D366; outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão Secundário (ghost)",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Ação secundária sobre fundo claro — cancelar, fazer proposta.",
+      "html": "<button class=\"ds-btn-ghost\">Fazer Proposta</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #000000; padding: 14px 24px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.15); font-weight: 500; font-size: 0.9375rem; font-family: Inter, ui-sans-serif, sans-serif; cursor: pointer; transition: background 0.2s; } .ds-btn-ghost:hover { background: rgba(0,0,0,0.05); } .ds-btn-ghost:focus-visible { outline: 2px solid #000000; outline-offset: 2px; }"
+    },
+    {
+      "name": "Etiqueta — Para venda",
+      "kind": "chip",
+      "refersTo": "badge-para-venda",
+      "description": "Estado de disponibilidade no cartão de stock e na página de detalhe.",
+      "html": "<span class=\"ds-badge ds-badge--venda\">Para venda</span>",
+      "css": ".ds-badge { display: inline-block; font-size: 0.6875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 12px; border-radius: 9999px; font-family: Inter, ui-sans-serif, sans-serif; } .ds-badge--venda { background: #2f7d4f; color: #ffffff; }"
+    },
+    {
+      "name": "Etiqueta — Brevemente",
+      "kind": "chip",
+      "refersTo": "badge-brevemente",
+      "description": "Dourado de marca — texto escuro obrigatório (o dourado é claro demais para texto branco).",
+      "html": "<span class=\"ds-badge ds-badge--brevemente\">Brevemente</span>",
+      "css": ".ds-badge--brevemente { background: #C2A07A; color: rgba(0,0,0,0.8); font-size: 0.6875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 12px; border-radius: 9999px; font-family: Inter, ui-sans-serif, sans-serif; }"
+    },
+    {
+      "name": "Etiqueta — Vendida",
+      "kind": "chip",
+      "refersTo": "badge-vendida",
+      "description": "Estado final — vermelho ferrugem, texto branco.",
+      "html": "<span class=\"ds-badge ds-badge--vendida\">Vendida</span>",
+      "css": ".ds-badge--vendida { background: #b02020; color: #ffffff; font-size: 0.6875rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; padding: 6px 12px; border-radius: 9999px; font-family: Inter, ui-sans-serif, sans-serif; }"
+    },
+    {
+      "name": "Cartão de Veículo",
+      "kind": "card",
+      "refersTo": "card-vehicle",
+      "description": "Cartão do stock — fundo preto, foto com zoom no hover, único movimento tátil do sistema hoje.",
+      "html": "<article class=\"ds-card-vehicle\"><div class=\"ds-card-vehicle__photo\"><img src=\"\" alt=\"\" /></div><div class=\"ds-card-vehicle__body\"><h3 class=\"ds-card-vehicle__name\">Fiat Dethleffs</h3><button class=\"ds-btn-primary\" style=\"width:100%;background:#fff;color:#000\">Ver detalhes</button></div></article>",
+      "css": ".ds-card-vehicle { background: #000000; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; } .ds-card-vehicle__photo { height: 208px; overflow: hidden; background: #1c1c1c; } .ds-card-vehicle__photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 500ms; } .ds-card-vehicle:hover .ds-card-vehicle__photo img { transform: scale(1.04); } .ds-card-vehicle__body { padding: 24px; } .ds-card-vehicle__name { font-family: 'Playfair Display', Georgia, serif; color: #ffffff; font-size: 1.25rem; font-weight: 500; margin: 0 0 12px; }"
+    },
+    {
+      "name": "Campo de Formulário",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Campo de texto padrão em todos os formulários do site.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"O seu nome\" />",
+      "css": ".ds-input { width: 100%; background: #ffffff; border: 1px solid rgba(0,0,0,0.15); border-radius: 12px; padding: 12px 16px; font-size: 0.875rem; font-family: Inter, ui-sans-serif, sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; } .ds-input:focus { border-color: rgba(0,0,0,0.4); box-shadow: 0 0 0 1px rgba(0,0,0,0.2); } .ds-input::placeholder { color: rgba(0,0,0,0.45); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Quintal da Família",
+    "overview": "Este não é um showroom — é o quintal de uma família que há mais de 10 anos compra, prepara e vende autocaravanas na Covilhã. O sistema visual evita qualquer brilho de stand grande ou linguagem de vendas agressiva: sem gradientes brilhantes, sem selos de \"oferta imperdível\", sem urgência artificial. A confiança vem de blocos de cor sólida (preto, branco, dourado) e texto direto, não de polimento corporativo.\n\nO sistema é predominantemente plano hoje — só duas sombras existem em todo o código (o menu móvel e o cartão \"Tem interesse?\"). A profundidade visual vem de contraste de cor, não de elevação. Confirmado com o utilizador: a direção para trabalho futuro é introduzir mais profundidade tátil (sombras suaves, cantos generosos) para que botões e cartões pareçam suaves e convidativos, não apenas sólidos.\n\nUm único acento serif (Playfair Display) marca os momentos mais importantes — o título da página de Stock, o cabeçalho \"Filtros\", o nome da autocaravana no cartão — como um preço escrito à mão num catálogo. Tudo o resto, incluindo a maioria dos títulos de página, usa Inter.",
+    "keyCharacteristics": [
+      "Blocos de cor sólida (preto/branco/dourado) em vez de gradientes ou sombras pesadas",
+      "Cantos generosamente arredondados em toda a interface — nunca cantos vivos",
+      "Um acento serif reservado, não um sistema tipográfico duplo espalhado por tudo",
+      "Cores de estado do stock (dourado/verde/vermelho) fazem trabalho semântico, não decorativo",
+      "Direção confirmada para o futuro: mais profundidade tátil (sombras suaves), mantendo a paleta"
+    ],
+    "rules": [
+      { "name": "A Regra do Piso de Contraste", "body": "Nenhum texto legível desce abaixo de black/60 ou white/60 de opacidade sobre o respetivo fundo — foi medido e corrigido uma vez (várias etiquetas e textos secundários chegavam a black/40, 2.85:1, muito abaixo do mínimo de 4.5:1). Novo texto secundário usa /60, /70 ou /80 — nunca mais claro.", "section": "colors" },
+      { "name": "A Regra do Verde Emprestado", "body": "O verde do WhatsApp (#25D366) nunca é reutilizado como cor de acento geral do site — é sempre e só o botão que abre o WhatsApp.", "section": "colors" },
+      { "name": "A Regra do Acento Único", "body": "Playfair Display marca no máximo um momento por página — o título principal ou o nome do produto, nunca os dois, e nunca um cabeçalho de secção.", "section": "typography" },
+      { "name": "A Regra do Convite Suave (provisória)", "body": "Novos componentes interativos (cartões, CTAs primários) devem experimentar uma sombra suave e ambiente em repouso ou hover, não ficar perfeitamente planos por defeito — direção confirmada pelo utilizador, ainda a construir.", "section": "elevation" },
+      { "name": "A Regra dos Cantos Generosos", "body": "Nenhum elemento interativo usa menos que rounded-lg (8px). Quanto mais importante o elemento, maior o raio.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do manter texto secundário em black/60 ou mais escuro sobre fundo claro (ou white/60+ sobre fundo escuro) — nunca mais claro.",
+      "Do reservar Playfair Display a um único momento de destaque por página.",
+      "Do manter o verde do WhatsApp exclusivo aos botões que abrem o WhatsApp.",
+      "Do usar texto escuro sobre o dourado de marca (nunca branco — falha de contraste).",
+      "Do experimentar sombras suaves em cartões/CTAs novos, seguindo a direção confirmada de mais profundidade tátil.",
+      "Do manter cantos generosos (rounded-lg no mínimo) em qualquer elemento interativo novo."
+    ],
+    "donts": [
+      "Don't introduzir gradientes brilhantes, selos de oferta, contagens decrescentes ou linguagem de urgência.",
+      "Don't misturar o verde do WhatsApp com o dourado/verde/vermelho do stock.",
+      "Don't usar texto branco sobre o dourado de marca.",
+      "Don't descer abaixo de rounded-lg (8px) num elemento interativo.",
+      "Don't adicionar um segundo momento serif à mesma página."
+    ]
+  }
+}

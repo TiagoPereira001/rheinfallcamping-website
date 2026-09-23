@@ -44,9 +44,9 @@ function VehicleCard({ v, onClick }: { v: Vehicle; onClick: (v: Vehicle) => void
           {v.year && <span>{v.year}</span>}
           {v.year && v.km && <span className="w-px h-3 bg-white/20" />}
           {v.km && <span>{v.km}</span>}
-          {v.km && v.price && !vendida && <span className="w-px h-3 bg-white/20" />}
-          {v.price && !vendida && (
-            <span className="text-white/80 font-medium">{v.price}</span>
+          {v.km && !vendida && <span className="w-px h-3 bg-white/20" />}
+          {!vendida && (
+            <span className="text-white/80 font-medium">{v.price || "Preço sob consulta"}</span>
           )}
         </div>
         <div className="mt-auto">

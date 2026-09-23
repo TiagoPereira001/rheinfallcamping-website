@@ -1,20 +1,22 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router";
-import { ChevronLeft, ChevronRight, Check, ImageIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, ImageIcon, X } from "lucide-react";
 import { useVehicle } from "../hooks/useVehicles";
 import { whatsappLink } from "../data/config";
 import { usePageTitle } from "../hooks/usePageTitle";
 import ShareButtons from "../components/ShareButtons";
 import { useStructuredData } from "../hooks/useStructuredData";
-import { parseNumero } from "../lib/utils";
+import { parseNumero, pareceContacto } from "../lib/utils";
 
 function VehicleDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { vehicle, loading } = useVehicle(id);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [lightboxAberto, setLightboxAberto] = useState(false);
   const [form, setForm] = useState({ nome: "", contacto: "" });
   const [erro, setErro] = useState("");
+  const contactoRef = useRef<HTMLDivElement>(null);
 
   usePageTitle(
     vehicle?.name,
@@ -71,6 +73,25 @@ function VehicleDetailPage() {
   );
   useStructuredData(dadosEstruturados);
 
+  const gallery = vehicle?.images?.length ? vehicle.images : vehicle?.image ? [vehicle.image] : [];
+  const hasMultiple = gallery.length > 1;
+
+  const nextPhoto = () => setPhotoIndex((i) => (i + 1) % gallery.length);
+  const prevPhoto = () => setPhotoIndex((i) => (i - 1 + gallery.length) % gallery.length);
+
+  // Navegação da galeria por teclado — só liga quando o lightbox está
+  // aberto, para não roubar as setas à página em uso normal.
+  useEffect(() => {
+    if (!lightboxAberto || !hasMultiple) return;
+    const aoTeclar = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") nextPhoto();
+      else if (e.key === "ArrowLeft") prevPhoto();
+      else if (e.key === "Escape") setLightboxAberto(false);
+    };
+    window.addEventListener("keydown", aoTeclar);
+    return () => window.removeEventListener("keydown", aoTeclar);
+  }, [lightboxAberto, hasMultiple]);
+
   if (loading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center bg-[#f4f4f2]">
@@ -91,13 +112,7 @@ function VehicleDetailPage() {
 
   const brevemente = vehicle.status === "brevemente";
   const vendida = vehicle.status === "vendida";
-
-  const gallery = vehicle.images?.length ? vehicle.images : vehicle.image ? [vehicle.image] : [];
-  const hasMultiple = gallery.length > 1;
   const currentPhoto = gallery[photoIndex] ?? gallery[0];
-
-  const nextPhoto = () => setPhotoIndex((i) => (i + 1) % gallery.length);
-  const prevPhoto = () => setPhotoIndex((i) => (i - 1 + gallery.length) % gallery.length);
 
   const specs = [
     { label: "Ano", value: vehicle.year },
@@ -123,6 +138,11 @@ function VehicleDetailPage() {
       return;
     }
 
+    if (!pareceContacto(form.contacto)) {
+      setErro("Isso não parece um email ou telefone válido. Verifique o contacto.");
+      return;
+    }
+
     const intro = vendida
       ? `Olá! Chamo-me ${form.nome.trim()}. Vi que a ${vehicle.name} já foi vendida — gostava de ser avisado se entrar alguma parecida.`
       : tipo === "proposta"
@@ -137,7 +157,7 @@ function VehicleDetailPage() {
 
   return (
     <div className="bg-[#f4f4f2] min-h-screen">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 md:py-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8 md:py-12 pb-24 lg:pb-12">
 
         <button
           onClick={() => navigate("/stock")}
@@ -162,8 +182,10 @@ function VehicleDetailPage() {
             {vehicle.name}
           </h1>
           <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
-            {vehicle.price && !vendida && (
-              <p className="text-black text-3xl font-medium">{vehicle.price}</p>
+            {!vendida && (
+              <p className="text-black text-3xl font-medium">
+                {vehicle.price || "Preço sob consulta"}
+              </p>
             )}
             <div className="flex items-center gap-3 text-black/60 text-sm">
               {vehicle.year && <span>{vehicle.year}</span>}
@@ -180,11 +202,18 @@ function VehicleDetailPage() {
             {gallery.length > 0 ? (
               <div className="mb-10">
                 <div className="relative rounded-2xl overflow-hidden bg-[#1c1c1c] aspect-[4/3] sm:aspect-[16/10]">
-                  <img
-                    src={currentPhoto}
-                    alt={`${vehicle.name} — foto ${photoIndex + 1}`}
-                    className={`w-full h-full object-cover ${vendida ? "grayscale-[35%]" : ""}`}
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setLightboxAberto(true)}
+                    aria-label="Ver foto em tamanho grande"
+                    className="block w-full h-full cursor-zoom-in"
+                  >
+                    <img
+                      src={currentPhoto}
+                      alt={`${vehicle.name} — foto ${photoIndex + 1}`}
+                      className={`w-full h-full object-cover ${vendida ? "grayscale-[35%]" : ""}`}
+                    />
+                  </button>
 
                   {hasMultiple && (
                     <>
@@ -229,7 +258,7 @@ function VehicleDetailPage() {
                 )}
               </div>
             ) : (
-              <div className="mb-10 rounded-2xl bg-[#e6e6e3] aspect-[16/10] flex flex-col items-center justify-center text-black/30">
+              <div className="mb-10 rounded-2xl bg-[#e6e6e3] aspect-[16/10] flex flex-col items-center justify-center text-black/60">
                 <ImageIcon size={40} />
                 <span className="text-sm mt-3">Fotos brevemente disponíveis</span>
               </div>
@@ -237,8 +266,8 @@ function VehicleDetailPage() {
 
             {vehicle.description && (
               <div className="mb-10">
-                <h3 className="text-xl font-medium mb-4">Descrição</h3>
-                <p className="text-black/80 text-[0.9375rem] leading-relaxed whitespace-pre-line">
+                <h2 className="text-xl font-medium mb-4">Descrição</h2>
+                <p className="max-w-[55ch] text-black/80 text-[0.9375rem] leading-relaxed whitespace-pre-line">
                   {vehicle.description}
                 </p>
               </div>
@@ -246,7 +275,7 @@ function VehicleDetailPage() {
 
             {specs.length > 0 && (
               <div className="mb-10">
-                <h3 className="text-xl font-medium mb-5">Especificações</h3>
+                <h2 className="text-xl font-medium mb-5">Especificações</h2>
                 <div className="bg-white rounded-2xl border border-black/5 overflow-hidden">
                   <div className="grid grid-cols-2 divide-x divide-y divide-black/5">
                     {specs.map((spec) => (
@@ -264,7 +293,7 @@ function VehicleDetailPage() {
 
             {equipamento.length > 0 && (
               <div>
-                <h3 className="text-xl font-medium mb-5">Equipamento</h3>
+                <h2 className="text-xl font-medium mb-5">Equipamento</h2>
                 <div className="bg-white rounded-2xl border border-black/5 p-6 md:p-8">
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                     {equipamento.map((item) => (
@@ -283,13 +312,14 @@ function VehicleDetailPage() {
 
           <div className="lg:col-span-1">
             <div
+              ref={contactoRef}
               className={`rounded-3xl p-8 lg:sticky lg:top-24 shadow-lg ${
                 vendida ? "bg-[#2a2a2a] text-white" : "bg-[#C2A07A] text-black"
               }`}
             >
-              <h3 className="text-xl font-medium mb-2">
+              <h2 className="text-xl font-medium mb-2">
                 {vendida ? "Mais um cliente satisfeito" : "Tem interesse?"}
-              </h3>
+              </h2>
               <p className={`text-sm mb-8 ${vendida ? "text-white/80" : "text-black/70"}`}>
                 {vendida
                   ? "Esta autocaravana já foi entregue ao novo dono. Procura algo parecido? Deixe o contacto e avisamos quando entrar algo semelhante."
@@ -306,8 +336,8 @@ function VehicleDetailPage() {
                   placeholder="Nome"
                   className={
                     vendida
-                      ? "w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
-                      : "w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-sm text-black placeholder-black/45 outline-none focus:border-black/40 focus:bg-black/10 transition-all"
+                      ? "w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/60 outline-none focus:border-white focus:bg-white/15 transition-all"
+                      : "w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-sm text-black placeholder-black/60 outline-none focus:border-black/40 focus:bg-black/10 transition-all"
                   }
                 />
                 <input
@@ -317,8 +347,8 @@ function VehicleDetailPage() {
                   placeholder="Email ou Telefone"
                   className={
                     vendida
-                      ? "w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/50 outline-none focus:border-white focus:bg-white/15 transition-all"
-                      : "w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-sm text-black placeholder-black/45 outline-none focus:border-black/40 focus:bg-black/10 transition-all"
+                      ? "w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-white/60 outline-none focus:border-white focus:bg-white/15 transition-all"
+                      : "w-full bg-black/5 border border-black/15 rounded-xl px-4 py-3 text-sm text-black placeholder-black/60 outline-none focus:border-black/40 focus:bg-black/10 transition-all"
                   }
                 />
 
@@ -354,6 +384,68 @@ function VehicleDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Barra fixa no mobile — no desktop o cartão da sidebar já é sticky,
+          mas em mobile fica ao fundo da página; isto mantém a ação de
+          contacto sempre alcançável, seja em que ponto do scroll estiver. */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-black/10 p-4 shadow-lg">
+        <button
+          onClick={() => contactoRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })}
+          className="w-full bg-black text-white text-[0.9375rem] font-medium py-3.5 rounded-xl"
+        >
+          {vendida ? "Avisar-me de algo semelhante" : "Tem interesse? Contactar"}
+        </button>
+      </div>
+
+      {lightboxAberto && gallery.length > 0 && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Foto de ${vehicle.name}`}
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setLightboxAberto(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxAberto(false)}
+            aria-label="Fechar"
+            className="absolute top-4 right-4 text-white/80 hover:text-white p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+          >
+            <X size={22} />
+          </button>
+
+          <img
+            src={currentPhoto}
+            alt={`${vehicle.name} — foto ${photoIndex + 1}`}
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {hasMultiple && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); prevPhoto(); }}
+                aria-label="Foto anterior"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); nextPhoto(); }}
+                aria-label="Foto seguinte"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <ChevronRight size={24} />
+              </button>
+              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm">
+                {photoIndex + 1} / {gallery.length}
+              </span>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
