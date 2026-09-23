@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 import { useVehicles } from "../hooks/useVehicles";
 import VehicleCard from "../components/VehicleCard";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useStructuredData } from "../hooks/useStructuredData";
-import { WHATSAPP_NUMBER, LOCATION } from "../data/config";
+import { WHATSAPP_NUMBER, LOCATION, whatsappLink } from "../data/config";
 
 
 
@@ -66,16 +66,27 @@ function HomePage() {
             <p className="text-white/70 text-base md:text-lg leading-relaxed mb-10 max-w-xl">
               Há mais de 10 anos a comprar, preparar e vender autocaravanas na zona da Covilhã. Cada uma é tratada como se fosse para nós.
             </p>
-            <Link
-              to="/stock"
-              className="inline-flex items-center gap-3 bg-white text-black text-sm font-medium px-7 py-3.5 rounded-full hover:bg-white/90 transition-colors duration-200 group"
-            >
-              Ver autocaravanas disponíveis
-              <ArrowUpRight
-                size={15}
-                className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200"
-              />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                to="/stock"
+                className="inline-flex items-center gap-3 bg-white text-black text-sm font-medium px-7 py-3.5 rounded-full hover:bg-white/90 transition-colors duration-200 group"
+              >
+                Ver autocaravanas disponíveis
+                <ArrowUpRight
+                  size={15}
+                  className="opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200"
+                />
+              </Link>
+              <a
+                href={whatsappLink("Olá, tenho interesse nas vossas autocaravanas.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#25D366] text-black text-sm font-medium px-7 py-3.5 rounded-full hover:bg-[#20bd5a] transition-colors duration-200"
+              >
+                <MessageCircle size={16} />
+                Falar por WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </section>
