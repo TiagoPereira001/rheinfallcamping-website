@@ -114,6 +114,9 @@ function Painel() {
       });
 
       if (aEditar) {
+        // As regras só aceitam "", "brevemente" ou "vendida" — sem isto um valor
+        // antigo (ex: "para venda") ficava no documento e bloqueava a gravação
+        dados.status = ["brevemente", "vendida"].includes(form.status) ? form.status : "";
         await updateDoc(doc(db, "vehicles", aEditar), dados);
         setMsg("Autocaravana atualizada.");
         // Não limpamos: continua a editar a mesma, no mesmo sítio
