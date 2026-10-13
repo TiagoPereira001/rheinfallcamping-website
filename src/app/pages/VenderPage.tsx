@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { CheckCircle2, MessageCircle } from "lucide-react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import { httpsCallable, FunctionsError } from "firebase/functions";
+import { functions } from "../lib/firebase";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { whatsappLink } from "../data/config";
+
+const submitLead = httpsCallable(functions, "submitLead");
 
 const campoVazio = {
   nome: "",
@@ -43,7 +45,7 @@ function VenderPage() {
 
     setAEnviar(true);
     try {
-      await addDoc(collection(db, "leads"), {
+      await submitLead({
         nome: form.nome.trim(),
         contacto: form.contacto.trim(),
         marca: form.marca.trim(),
@@ -51,12 +53,14 @@ function VenderPage() {
         km: form.km.trim(),
         preco: form.preco.trim(),
         notas: form.notas.trim(),
-        criadoEm: serverTimestamp(),
-        tratado: false,
       });
       setEnviado(true);
-    } catch {
-      setErro("Não foi possível enviar. Tente novamente ou contacte-nos por telefone.");
+    } catch (err) {
+      if (err instanceof FunctionsError && err.code === "functions/resource-exhausted") {
+        setErro("Já recebemos vários pedidos seus. Tente novamente daqui a algum tempo.");
+      } else {
+        setErro("Não foi possível enviar. Tente novamente ou contacte-nos por telefone.");
+      }
     } finally {
       setAEnviar(false);
     }
@@ -87,7 +91,7 @@ function VenderPage() {
           </p>
           <button
             onClick={abrirWhatsApp}
-            className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white text-[0.9375rem] font-medium px-7 py-3.5 rounded-xl hover:bg-[#20bd5a] transition-colors"
+            className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-black text-[0.9375rem] font-medium px-7 py-3.5 rounded-xl hover:bg-[#20bd5a] transition-colors"
           >
             <MessageCircle size={17} />
             Falar por WhatsApp
