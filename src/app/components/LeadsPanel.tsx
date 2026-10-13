@@ -1,14 +1,11 @@
-import { httpsCallable } from "firebase/functions";
+import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { Trash2, Check, Clock } from "lucide-react";
-import { functions } from "../lib/firebase";
+import { db } from "../lib/firebase";
 import type { Lead } from "../hooks/useLeads";
 
-const setLeadTratado = httpsCallable(functions, "setLeadTratado");
-const deleteLead = httpsCallable(functions, "deleteLead");
-
 function dataLegivel(l: Lead) {
-  if (!l.criadoEm) return "";
-  return new Date(l.criadoEm).toLocaleDateString("pt-PT", {
+  if (!l.criadoEm?.seconds) return "";
+  return new Date(l.criadoEm.seconds * 1000).toLocaleDateString("pt-PT", {
     day: "2-digit", month: "short", year: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
@@ -23,13 +20,13 @@ type Props = {
 
 function LeadsPanel({ leads, aCarregar, erro, recarregar }: Props) {
   const alternarTratado = async (l: Lead) => {
-    await setLeadTratado({ id: l.id, tratado: !l.tratado });
+    await updateDoc(doc(db, "leads", l.id), { tratado: !l.tratado });
     recarregar();
   };
 
   const apagar = async (l: Lead) => {
     if (!confirm(`Apagar o pedido de ${l.nome || "sem nome"}?`)) return;
-    await deleteLead({ id: l.id });
+    await deleteDoc(doc(db, "leads", l.id));
     recarregar();
   };
 
